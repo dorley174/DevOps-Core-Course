@@ -6,7 +6,7 @@
 
 I chose **Flask** because:
 - It is lightweight and easy to set up for a small service with 2 endpoints.
-- Minimal boilerplate: perfect for a “foundation” lab where the focus is DevOps workflow (Docker/CI/K8s).
+- Minimal boilerplate: perfect for a “foundation” lab where the focus is DevOps workflow.
 - Great learning curve and widely used in industry for microservices.
 
 ### Comparison Table
@@ -21,9 +21,9 @@ I chose **Flask** because:
 
 ### 2.1 Clean Code Organization (PEP 8, structure)
 
-- Imports grouped (stdlib first, third-party next).
+- Imports grouped.
 - Constants for configuration and service metadata.
-- Helper functions: `get_system_info()`, `get_uptime()`, `get_client_ip()`, `iso_utc_now_z()`.
+
 
 **Example (helpers):**
 ```python
@@ -48,7 +48,7 @@ DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 ```
 
 Why it matters:
-- Same artifact runs in different environments (local / CI / Docker / K8s) without code changes.
+- Same artifact runs in different environments without code changes.
 
 ### 2.3 Error Handling
 
