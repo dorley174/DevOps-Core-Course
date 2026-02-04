@@ -88,3 +88,53 @@ curl -s http://127.0.0.1:5000/ | python -m json.tool
 | HOST     | 0.0.0.0 | Bind address |
 | PORT     | 5000    | HTTP port |
 | DEBUG    | False   | Flask debug mode |
+
+----
+
+## Run locally
+
+```bash
+pip install -r requirements.txt
+python app.py
+```
+
+By default the service listens on `0.0.0.0:5000`.
+
+- `GET /` — service + system + runtime + request info
+- `GET /health` — health check
+
+## Docker
+
+> Patterns below use placeholders like `<image>` and `<tag>`.
+
+### Build (local)
+
+```bash
+docker build -t <image>:<tag> .
+```
+
+### Run
+
+```bash
+docker run --rm -p 5000:5000 <image>:<tag>
+```
+
+(Optionally override env vars)
+
+```bash
+docker run --rm -p 5000:5000 -e PORT=5000 -e DEBUG=false <image>:<tag>
+```
+
+### Pull from Docker Hub
+
+```bash
+docker pull <dockerhub-username>/<repo>:<tag>
+docker run --rm -p 5000:5000 <dockerhub-username>/<repo>:<tag>
+```
+
+### Quick test
+
+```bash
+curl http://localhost:5000/health
+curl http://localhost:5000/
+```

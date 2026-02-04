@@ -1,0 +1,23 @@
+# Python bytecode / cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtualenvs
+.venv/
+venv/
+
+# VCS
+.git/
+.gitignore
+
+# IDEs / OS junk
+.vscode/
+.idea/
+.DS_Store
+
+# Docs & tests are not needed at runtime
+docs/
+tests/
+README.md
