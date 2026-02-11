@@ -60,12 +60,14 @@ jobs:
           path: coverage.xml
 
       - name: Snyk scan (dependencies)
-        uses: snyk/actions/python-3@master
+        uses: snyk/actions/python@master
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --severity-threshold=high --file=app_python/requirements.txt
+          command: test
+          args: --severity-threshold=high --file=requirements.txt
+        working-directory: app_python
 
   docker-build-and-push:
     runs-on: ubuntu-latest
