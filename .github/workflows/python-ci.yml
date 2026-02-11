@@ -59,15 +59,16 @@ jobs:
           name: coverage-xml
           path: coverage.xml
 
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+
       - name: Snyk scan (dependencies)
-        uses: snyk/actions/python@master
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          command: test
-          args: --severity-threshold=high --file=requirements.txt
-        working-directory: app_python
+        run: |
+          cd app_python
+          snyk test --severity-threshold=high --file=requirements.txt
 
   docker-build-and-push:
     runs-on: ubuntu-latest
