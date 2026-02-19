@@ -1,5 +1,7 @@
 # DevOps Info Service
 
+[![python-ci](https://github.com/dorley174/DevOps-Core-Course/actions/workflows/python-ci.yml/badge.svg)](https://github.com/dorley174/DevOps-Core-Course/actions/workflows/python-ci.yml)
+
 ## Overview
 DevOps Info Service is a production-ready starter web service for the DevOps course.  
 It reports service metadata, runtime details, and basic system information.
@@ -16,13 +18,13 @@ The service exposes two endpoints:
 
 ## Installation
 
-```
+```bash
 python -m venv venv
-source venv/bin/activate
+# Windows: .\venv\Scripts\activate
+# Linux/macOS: source venv/bin/activate
+
 pip install -r requirements.txt
 ```
-
-
 
 ## Running the Application
 
@@ -31,7 +33,7 @@ pip install -r requirements.txt
 ```bash
 python app.py
 ```
-I will also test IP *192.168.31.32:5000*
+
 ### Custom configuration
 
 **Linux/Mac:**
@@ -81,6 +83,35 @@ curl -i http://127.0.0.1:5000/health
 curl -s http://127.0.0.1:5000/ | python -m json.tool
 ```
 
+## Testing & Linting (LAB03)
+
+> Dev dependencies live in `requirements-dev.txt` (pytest, coverage, ruff).
+
+Install dev deps:
+```bash
+pip install -r requirements-dev.txt
+```
+
+Run linter:
+```bash
+ruff check .
+```
+
+Run tests + coverage:
+```bash
+pytest -q tests --cov=. --cov-report=term-missing
+```
+
+## CI/CD Secrets (GitHub Actions)
+
+In your GitHub repository:
+**Settings → Secrets and variables → Actions → New repository secret**
+
+Add:
+- `DOCKERHUB_USERNAME` — your Docker Hub username
+- `DOCKERHUB_TOKEN` — Docker Hub Access Token (Account Settings → Security)
+- `SNYK_TOKEN` — Snyk API token (Account settings → API token)
+
 ## Configuration
 
 | Variable | Default | Description |
@@ -89,23 +120,11 @@ curl -s http://127.0.0.1:5000/ | python -m json.tool
 | PORT     | 5000    | HTTP port |
 | DEBUG    | False   | Flask debug mode |
 
-----
-
-## Run locally
-
-```bash
-pip install -r requirements.txt
-python app.py
-```
-
-By default the service listens on `0.0.0.0:5000`.
-
-- `GET /` — service + system + runtime + request info
-- `GET /health` — health check
+---
 
 ## Docker
 
-> Patterns below use placeholders like `<image>` and `<tag>`.
+> Examples below use placeholders like `<image>` and `<tag>`.
 
 ### Build (local)
 
@@ -119,7 +138,7 @@ docker build -t <image>:<tag> .
 docker run --rm -p 5000:5000 <image>:<tag>
 ```
 
-(Optionally override env vars)
+(Optional: override env vars)
 
 ```bash
 docker run --rm -p 5000:5000 -e PORT=5000 -e DEBUG=false <image>:<tag>
