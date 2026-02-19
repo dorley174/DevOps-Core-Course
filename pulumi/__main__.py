@@ -61,7 +61,7 @@ subnet = yandex.VpcSubnet(
 sg = yandex.VpcSecurityGroup(
     "lab04-sg",
     network_id=net.id,
-    ingress=[
+    ingresses=[
         yandex.VpcSecurityGroupIngressArgs(
             protocol="TCP",
             description="SSH",
@@ -81,7 +81,7 @@ sg = yandex.VpcSecurityGroup(
             port=5000,
         ),
     ],
-    egress=[
+    egresses=[
         yandex.VpcSecurityGroupEgressArgs(
             protocol="ANY",
             description="Allow all outbound",
@@ -91,6 +91,7 @@ sg = yandex.VpcSecurityGroup(
         )
     ],
 )
+
 
 # -----------------
 # VM

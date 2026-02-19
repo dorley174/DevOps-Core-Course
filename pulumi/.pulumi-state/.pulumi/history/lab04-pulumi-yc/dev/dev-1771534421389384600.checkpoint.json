@@ -1,0 +1,427 @@
+{
+    "version": 3,
+    "checkpoint": {
+        "stack": "organization/lab04-pulumi-yc/dev",
+        "latest": {
+            "manifest": {
+                "time": "2026-02-19T23:53:41.118824+03:00",
+                "magic": "7b54cd6e79f5cecd9ae124cb92b834b486c7e21993124e3a4e456c27c3ce48f9",
+                "version": "v3.222.0"
+            },
+            "secrets_providers": {
+                "type": "passphrase",
+                "state": {
+                    "salt": "v1:3yNf1Kmt4mA=:v1:Uk9In8z0RD2XJTza:lncnLY42u3UftJy+QfrDw6S2OT6vmQ=="
+                }
+            },
+            "resources": [
+                {
+                    "urn": "urn:pulumi:dev::lab04-pulumi-yc::pulumi:providers:yandex::default_0_13_0",
+                    "custom": true,
+                    "id": "7d12287d-55f3-465d-8fa0-e63bfc770a1f",
+                    "type": "pulumi:providers:yandex",
+                    "inputs": {
+                        "__internal": {},
+                        "version": "0.13.0"
+                    },
+                    "outputs": {
+                        "version": "0.13.0"
+                    },
+                    "created": "2026-02-19T20:52:45.8287147Z",
+                    "modified": "2026-02-19T20:52:45.8287147Z"
+                },
+                {
+                    "urn": "urn:pulumi:dev::lab04-pulumi-yc::pulumi:pulumi:Stack::lab04-pulumi-yc-dev",
+                    "custom": false,
+                    "type": "pulumi:pulumi:Stack",
+                    "outputs": {
+                        "app_url": "http://89.169.135.154:5000/",
+                        "http_url": "http://89.169.135.154/",
+                        "internal_ip": "10.10.0.6",
+                        "public_ip": "89.169.135.154",
+                        "ssh_command": "ssh -i ~/.ssh/lab04_ed25519 ubuntu@89.169.135.154"
+                    },
+                    "created": "2026-02-19T20:52:45.8630518Z",
+                    "modified": "2026-02-19T20:52:45.8630518Z"
+                },
+                {
+                    "urn": "urn:pulumi:dev::lab04-pulumi-yc::yandex:index/vpcNetwork:VpcNetwork::lab04-net",
+                    "custom": true,
+                    "id": "enpet9l87ashn294afa1",
+                    "type": "yandex:index/vpcNetwork:VpcNetwork",
+                    "inputs": {
+                        "__defaults": [
+                            "name"
+                        ],
+                        "name": "lab04-net-7bf49ed"
+                    },
+                    "outputs": {
+                        "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":60000000000,\"delete\":60000000000,\"update\":60000000000}}",
+                        "createdAt": "2026-02-19T20:52:48Z",
+                        "defaultSecurityGroupId": "enp912ofg69vrp8iegur",
+                        "description": "",
+                        "folderId": "b1g82kdcn5grlmu79ano",
+                        "id": "enpet9l87ashn294afa1",
+                        "labels": {},
+                        "name": "lab04-net-7bf49ed",
+                        "subnetIds": []
+                    },
+                    "parent": "urn:pulumi:dev::lab04-pulumi-yc::pulumi:pulumi:Stack::lab04-pulumi-yc-dev",
+                    "provider": "urn:pulumi:dev::lab04-pulumi-yc::pulumi:providers:yandex::default_0_13_0::7d12287d-55f3-465d-8fa0-e63bfc770a1f",
+                    "created": "2026-02-19T20:52:49.994421Z",
+                    "modified": "2026-02-19T20:52:49.994421Z"
+                },
+                {
+                    "urn": "urn:pulumi:dev::lab04-pulumi-yc::yandex:index/vpcSubnet:VpcSubnet::lab04-subnet",
+                    "custom": true,
+                    "id": "e9b3hl3h09t6drs68pbg",
+                    "type": "yandex:index/vpcSubnet:VpcSubnet",
+                    "inputs": {
+                        "__defaults": [
+                            "name"
+                        ],
+                        "name": "lab04-subnet-1fa918f",
+                        "networkId": "enpet9l87ashn294afa1",
+                        "v4CidrBlocks": [
+                            "10.10.0.0/24"
+                        ],
+                        "zone": "ru-central1-a"
+                    },
+                    "outputs": {
+                        "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":180000000000,\"delete\":180000000000,\"update\":180000000000}}",
+                        "createdAt": "2026-02-19T20:52:50Z",
+                        "description": "",
+                        "dhcpOptions": null,
+                        "folderId": "b1g82kdcn5grlmu79ano",
+                        "id": "e9b3hl3h09t6drs68pbg",
+                        "labels": {},
+                        "name": "lab04-subnet-1fa918f",
+                        "networkId": "enpet9l87ashn294afa1",
+                        "routeTableId": "",
+                        "v4CidrBlocks": [
+                            "10.10.0.0/24"
+                        ],
+                        "v6CidrBlocks": [],
+                        "zone": "ru-central1-a"
+                    },
+                    "parent": "urn:pulumi:dev::lab04-pulumi-yc::pulumi:pulumi:Stack::lab04-pulumi-yc-dev",
+                    "dependencies": [
+                        "urn:pulumi:dev::lab04-pulumi-yc::yandex:index/vpcNetwork:VpcNetwork::lab04-net"
+                    ],
+                    "provider": "urn:pulumi:dev::lab04-pulumi-yc::pulumi:providers:yandex::default_0_13_0::7d12287d-55f3-465d-8fa0-e63bfc770a1f",
+                    "propertyDependencies": {
+                        "networkId": [
+                            "urn:pulumi:dev::lab04-pulumi-yc::yandex:index/vpcNetwork:VpcNetwork::lab04-net"
+                        ],
+                        "v4CidrBlocks": [],
+                        "zone": []
+                    },
+                    "created": "2026-02-19T20:52:50.5480973Z",
+                    "modified": "2026-02-19T20:52:50.5480973Z"
+                },
+                {
+                    "urn": "urn:pulumi:dev::lab04-pulumi-yc::yandex:index/vpcSecurityGroup:VpcSecurityGroup::lab04-sg",
+                    "custom": true,
+                    "id": "enpb8heveqi8pp7mvbcv",
+                    "type": "yandex:index/vpcSecurityGroup:VpcSecurityGroup",
+                    "inputs": {
+                        "__defaults": [
+                            "name"
+                        ],
+                        "egresses": [
+                            {
+                                "__defaults": [
+                                    "port"
+                                ],
+                                "description": "Allow all outbound",
+                                "fromPort": 0,
+                                "port": -1,
+                                "protocol": "ANY",
+                                "toPort": 65535,
+                                "v4CidrBlocks": [
+                                    "0.0.0.0/0"
+                                ]
+                            }
+                        ],
+                        "ingresses": [
+                            {
+                                "__defaults": [
+                                    "fromPort",
+                                    "toPort"
+                                ],
+                                "description": "SSH",
+                                "fromPort": -1,
+                                "port": 22,
+                                "protocol": "TCP",
+                                "toPort": -1,
+                                "v4CidrBlocks": [
+                                    "95.111.204.70/32"
+                                ]
+                            },
+                            {
+                                "__defaults": [
+                                    "fromPort",
+                                    "toPort"
+                                ],
+                                "description": "HTTP",
+                                "fromPort": -1,
+                                "port": 80,
+                                "protocol": "TCP",
+                                "toPort": -1,
+                                "v4CidrBlocks": [
+                                    "0.0.0.0/0"
+                                ]
+                            },
+                            {
+                                "__defaults": [
+                                    "fromPort",
+                                    "toPort"
+                                ],
+                                "description": "App 5000",
+                                "fromPort": -1,
+                                "port": 5000,
+                                "protocol": "TCP",
+                                "toPort": -1,
+                                "v4CidrBlocks": [
+                                    "0.0.0.0/0"
+                                ]
+                            }
+                        ],
+                        "name": "lab04-sg-7fdbda7",
+                        "networkId": "enpet9l87ashn294afa1"
+                    },
+                    "outputs": {
+                        "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":180000000000,\"delete\":180000000000,\"update\":180000000000}}",
+                        "createdAt": "2026-02-19T20:52:52Z",
+                        "description": "",
+                        "egresses": [
+                            {
+                                "description": "Allow all outbound",
+                                "fromPort": 0,
+                                "id": "enpqsfspqfq9fqiee48t",
+                                "labels": {},
+                                "port": -1,
+                                "predefinedTarget": "",
+                                "protocol": "ANY",
+                                "securityGroupId": "",
+                                "toPort": 65535,
+                                "v4CidrBlocks": [
+                                    "0.0.0.0/0"
+                                ],
+                                "v6CidrBlocks": []
+                            }
+                        ],
+                        "folderId": "b1g82kdcn5grlmu79ano",
+                        "id": "enpb8heveqi8pp7mvbcv",
+                        "ingresses": [
+                            {
+                                "description": "SSH",
+                                "fromPort": -1,
+                                "id": "enpbhntafog7fraba6rd",
+                                "labels": {},
+                                "port": 22,
+                                "predefinedTarget": "",
+                                "protocol": "TCP",
+                                "securityGroupId": "",
+                                "toPort": -1,
+                                "v4CidrBlocks": [
+                                    "95.111.204.70/32"
+                                ],
+                                "v6CidrBlocks": []
+                            },
+                            {
+                                "description": "HTTP",
+                                "fromPort": -1,
+                                "id": "enp80blit93rhb8rh3eb",
+                                "labels": {},
+                                "port": 80,
+                                "predefinedTarget": "",
+                                "protocol": "TCP",
+                                "securityGroupId": "",
+                                "toPort": -1,
+                                "v4CidrBlocks": [
+                                    "0.0.0.0/0"
+                                ],
+                                "v6CidrBlocks": []
+                            },
+                            {
+                                "description": "App 5000",
+                                "fromPort": -1,
+                                "id": "enp39asi999eg5hhq4o1",
+                                "labels": {},
+                                "port": 5000,
+                                "predefinedTarget": "",
+                                "protocol": "TCP",
+                                "securityGroupId": "",
+                                "toPort": -1,
+                                "v4CidrBlocks": [
+                                    "0.0.0.0/0"
+                                ],
+                                "v6CidrBlocks": []
+                            }
+                        ],
+                        "labels": {},
+                        "name": "lab04-sg-7fdbda7",
+                        "networkId": "enpet9l87ashn294afa1",
+                        "status": "ACTIVE"
+                    },
+                    "parent": "urn:pulumi:dev::lab04-pulumi-yc::pulumi:pulumi:Stack::lab04-pulumi-yc-dev",
+                    "dependencies": [
+                        "urn:pulumi:dev::lab04-pulumi-yc::yandex:index/vpcNetwork:VpcNetwork::lab04-net"
+                    ],
+                    "provider": "urn:pulumi:dev::lab04-pulumi-yc::pulumi:providers:yandex::default_0_13_0::7d12287d-55f3-465d-8fa0-e63bfc770a1f",
+                    "propertyDependencies": {
+                        "egresses": [],
+                        "ingresses": [],
+                        "networkId": [
+                            "urn:pulumi:dev::lab04-pulumi-yc::yandex:index/vpcNetwork:VpcNetwork::lab04-net"
+                        ]
+                    },
+                    "created": "2026-02-19T20:52:52.5246052Z",
+                    "modified": "2026-02-19T20:52:52.5246052Z"
+                },
+                {
+                    "urn": "urn:pulumi:dev::lab04-pulumi-yc::yandex:index/computeInstance:ComputeInstance::lab04-vm",
+                    "custom": true,
+                    "id": "fhm7ed1a5b85rs8u3uop",
+                    "type": "yandex:index/computeInstance:ComputeInstance",
+                    "inputs": {
+                        "__defaults": [
+                            "name",
+                            "networkAccelerationType"
+                        ],
+                        "allowStoppingForUpdate": true,
+                        "bootDisk": {
+                            "__defaults": [
+                                "autoDelete"
+                            ],
+                            "autoDelete": true,
+                            "initializeParams": {
+                                "__defaults": [],
+                                "imageId": "fd8lt661chfo5i13a40d",
+                                "size": 10,
+                                "type": "network-hdd"
+                            }
+                        },
+                        "metadata": {
+                            "__defaults": [],
+                            "ssh-keys": "ubuntu:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII5nKglXX/E2/S3oPKXahGr77IZELnnZlqE4oGCyEhZQ Данил@Dorley"
+                        },
+                        "name": "lab04-vm-6023a00",
+                        "networkAccelerationType": "standard",
+                        "networkInterfaces": [
+                            {
+                                "__defaults": [
+                                    "ipv4"
+                                ],
+                                "ipv4": true,
+                                "nat": true,
+                                "securityGroupIds": [
+                                    "enpb8heveqi8pp7mvbcv"
+                                ],
+                                "subnetId": "e9b3hl3h09t6drs68pbg"
+                            }
+                        ],
+                        "platformId": "standard-v2",
+                        "resources": {
+                            "__defaults": [],
+                            "coreFraction": 20,
+                            "cores": 2,
+                            "memory": 1
+                        },
+                        "zone": "ru-central1-a"
+                    },
+                    "outputs": {
+                        "__meta": "{\"e2bfb730-ecaa-11e6-8f88-34363bc7c4c0\":{\"create\":300000000000,\"delete\":300000000000,\"update\":300000000000},\"schema_version\":\"1\"}",
+                        "allowStoppingForUpdate": true,
+                        "bootDisk": {
+                            "autoDelete": true,
+                            "deviceName": "fhmonvdcv96scusbdsm3",
+                            "diskId": "fhmonvdcv96scusbdsm3",
+                            "initializeParams": {
+                                "blockSize": 4096,
+                                "description": "",
+                                "imageId": "fd8lt661chfo5i13a40d",
+                                "name": "",
+                                "size": 10,
+                                "snapshotId": "",
+                                "type": "network-hdd"
+                            },
+                            "mode": "READ_WRITE"
+                        },
+                        "createdAt": "2026-02-19T20:52:53Z",
+                        "description": "",
+                        "folderId": "b1g82kdcn5grlmu79ano",
+                        "fqdn": "fhm7ed1a5b85rs8u3uop.auto.internal",
+                        "hostname": "fhm7ed1a5b85rs8u3uop",
+                        "id": "fhm7ed1a5b85rs8u3uop",
+                        "labels": {},
+                        "metadata": {
+                            "ssh-keys": "ubuntu:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII5nKglXX/E2/S3oPKXahGr77IZELnnZlqE4oGCyEhZQ Данил@Dorley"
+                        },
+                        "name": "lab04-vm-6023a00",
+                        "networkAccelerationType": "standard",
+                        "networkInterfaces": [
+                            {
+                                "dnsRecords": [],
+                                "index": 0,
+                                "ipAddress": "10.10.0.6",
+                                "ipv4": true,
+                                "ipv6": false,
+                                "ipv6Address": "",
+                                "ipv6DnsRecords": [],
+                                "macAddress": "d0:0d:77:34:2a:2a",
+                                "nat": true,
+                                "natDnsRecords": [],
+                                "natIpAddress": "89.169.135.154",
+                                "natIpVersion": "IPV4",
+                                "securityGroupIds": [
+                                    "enpb8heveqi8pp7mvbcv"
+                                ],
+                                "subnetId": "e9b3hl3h09t6drs68pbg"
+                            }
+                        ],
+                        "placementPolicy": {
+                            "placementGroupId": ""
+                        },
+                        "platformId": "standard-v2",
+                        "resources": {
+                            "coreFraction": 20,
+                            "cores": 2,
+                            "gpus": 0,
+                            "memory": 1
+                        },
+                        "schedulingPolicy": {
+                            "preemptible": false
+                        },
+                        "secondaryDisks": [],
+                        "serviceAccountId": "",
+                        "status": "running",
+                        "zone": "ru-central1-a"
+                    },
+                    "parent": "urn:pulumi:dev::lab04-pulumi-yc::pulumi:pulumi:Stack::lab04-pulumi-yc-dev",
+                    "dependencies": [
+                        "urn:pulumi:dev::lab04-pulumi-yc::yandex:index/vpcSecurityGroup:VpcSecurityGroup::lab04-sg",
+                        "urn:pulumi:dev::lab04-pulumi-yc::yandex:index/vpcSubnet:VpcSubnet::lab04-subnet"
+                    ],
+                    "provider": "urn:pulumi:dev::lab04-pulumi-yc::pulumi:providers:yandex::default_0_13_0::7d12287d-55f3-465d-8fa0-e63bfc770a1f",
+                    "propertyDependencies": {
+                        "allowStoppingForUpdate": [],
+                        "bootDisk": [],
+                        "metadata": [],
+                        "networkInterfaces": [
+                            "urn:pulumi:dev::lab04-pulumi-yc::yandex:index/vpcSecurityGroup:VpcSecurityGroup::lab04-sg",
+                            "urn:pulumi:dev::lab04-pulumi-yc::yandex:index/vpcSubnet:VpcSubnet::lab04-subnet"
+                        ],
+                        "platformId": [],
+                        "resources": [],
+                        "zone": []
+                    },
+                    "created": "2026-02-19T20:53:41.0764236Z",
+                    "modified": "2026-02-19T20:53:41.0764236Z"
+                }
+            ],
+            "metadata": {}
+        }
+    }
+}

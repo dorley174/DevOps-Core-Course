@@ -167,7 +167,7 @@ pulumi destroy
 
 There are workflow `.github/workflows/terraform-ci.yml`.
 
-log
+all logs in lab04 folder
 
 ---
 

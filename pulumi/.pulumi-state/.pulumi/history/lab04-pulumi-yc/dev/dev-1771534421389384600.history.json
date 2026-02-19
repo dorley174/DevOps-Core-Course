@@ -1,0 +1,44 @@
+{
+    "kind": "update",
+    "startTime": 1771534364,
+    "message": "feat: added terraform lab part",
+    "environment": {
+        "exec.kind": "cli",
+        "git.author": "dorley174",
+        "git.author.email": "d.valiev@innopolis.university",
+        "git.committer": "dorley174",
+        "git.committer.email": "d.valiev@innopolis.university",
+        "git.dirty": "true",
+        "git.head": "46866051a9837ae9503ab3f8665d0317ce29e2dc",
+        "git.headName": "refs/heads/lab04",
+        "pulumi.arch": "amd64",
+        "pulumi.os": "windows",
+        "pulumi.version": "v3.222.0",
+        "runtime.executable": "C:\\DevOps\\DevOps-Core-Course\\pulumi\\venv\\Scripts\\python.exe",
+        "runtime.metadata.toolchain": "Pip",
+        "runtime.metadata.toolchainVersion": "26.0.1",
+        "runtime.metadata.typechecker": "None",
+        "runtime.name": "python",
+        "runtime.version": "3.13.1",
+        "stack.environments": "[]",
+        "updatePlan": "false",
+        "vcs.kind": "github.com",
+        "vcs.owner": "dorley174",
+        "vcs.repo": "DevOps-Core-Course",
+        "vcs.root": "pulumi"
+    },
+    "config": {
+        "lab04-pulumi-yc:allowedSshCidr": "95.111.204.70/32",
+        "lab04-pulumi-yc:imageFamily": "ubuntu-2404-lts",
+        "lab04-pulumi-yc:sshPublicKeyPath": "~/.ssh/lab04_ed25519.pub",
+        "lab04-pulumi-yc:sshUser": "ubuntu",
+        "lab04-pulumi-yc:subnetCidr": "10.10.0.0/24",
+        "lab04-pulumi-yc:zone": "ru-central1-a"
+    },
+    "version": 0,
+    "result": "succeeded",
+    "endTime": 1771534421,
+    "resourceChanges": {
+        "create": 5
+    }
+}
