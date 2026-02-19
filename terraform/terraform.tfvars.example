@@ -1,0 +1,40 @@
+# --- YC identifiers ---
+# Можно оставить пустым и задать через env YC_CLOUD_ID / YC_FOLDER_ID
+cloud_id  = ""
+folder_id = ""
+
+# --- Zone / Network ---
+zone        = "ru-central1-a"
+subnet_cidr = "10.10.0.0/24"
+
+# Разрешить SSH только с вашего IP (пример):
+# allowed_ssh_cidr = "93.184.216.34/32"
+allowed_ssh_cidr = "0.0.0.0/0"
+
+# --- Auth ---
+# Рекомендуется: env YC_TOKEN / YC_SERVICE_ACCOUNT_KEY_FILE.
+# yc_token = "..."
+# service_account_key_file = "C:/Users/<you>/key.json"
+
+# --- SSH ---
+ssh_user = "ubuntu"
+
+# ВАРИАНТ 1: вставить ключ строкой
+# ssh_public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... lab04"
+
+# ВАРИАНТ 2: путь до .pub
+ssh_public_key_path = "~/.ssh/lab04_ed25519.pub"
+
+# --- VM sizing ---
+vm_cores         = 2
+vm_memory_gb     = 1
+vm_core_fraction = 20
+
+preemptible  = false
+platform_id  = "standard-v2"
+disk_size_gb = 10
+disk_type    = "network-hdd"
+
+# image_family может отличаться. Если data source не найдёт образ —
+# уточните доступные семьи образов в YC.
+image_family = "ubuntu-2404-lts"

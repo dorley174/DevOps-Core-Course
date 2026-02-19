@@ -1,0 +1,6 @@
+name: lab04-pulumi-yc
+runtime:
+  name: python
+  options:
+    virtualenv: venv
+description: Lab04 infrastructure in Yandex Cloud using Pulumi (Python)

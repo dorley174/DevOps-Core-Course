@@ -1,0 +1,282 @@
+PS C:\DevOps\DevOps-Core-Course> git add .
+PS C:\DevOps\DevOps-Core-Course> git commit -m "feat: added terraform lab part"
+[lab04 4686605] feat: added terraform lab part
+ 30 files changed, 1767 insertions(+), 1 deletion(-)
+ create mode 100644 .github/workflows/terraform-ci.yml
+ create mode 100644 app_python/docs/LAB04.md
+ create mode 100644 lab04_proofs/proof.png
+ create mode 100644 lab04_proofs/terraform_intalling_log.txt
+ create mode 100644 lab04_proofs/ubuntu_logs.txt
+ create mode 100644 pulumi/.gitignore
+ create mode 100644 pulumi/Pulumi.yaml
+ create mode 100644 pulumi/README.md
+ create mode 100644 pulumi/__main__.py
+ create mode 100644 pulumi/requirements.txt
+ create mode 100644 scripts/load-env.ps1
+ create mode 100644 terraform/.gitignore
+ create mode 100644 terraform/.tflint.hcl
+ create mode 100644 terraform/README.md
+ create mode 100644 terraform/github/.gitignore
+ create mode 100644 terraform/github/.tflint.hcl
+ create mode 100644 terraform/github/main.tf
+ create mode 100644 terraform/github/outputs.tf
+ create mode 100644 terraform/github/providers.tf
+ create mode 100644 terraform/github/terraform.tfvars.example
+ create mode 100644 terraform/github/variables.tf
+ create mode 100644 terraform/github/versions.tf
+ create mode 100644 terraform/locals.tf
+ create mode 100644 terraform/main.tf
+ create mode 100644 terraform/outputs.tf
+ create mode 100644 terraform/providers.tf
+ create mode 100644 terraform/terraform.tfvars.example
+ create mode 100644 terraform/variables.tf
+ create mode 100644 terraform/versions.tf
+PS C:\DevOps\DevOps-Core-Course> git push origin lab04
+Enumerating objects: 47, done.
+Counting objects: 100% (47/47), done.
+Delta compression using up to 20 threads
+Compressing objects: 100% (36/36), done.
+Writing objects: 100% (41/41), 113.24 KiB | 5.66 MiB/s, done.
+Total 41 (delta 2), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+remote:
+remote: Create a pull request for 'lab04' on GitHub by visiting:
+remote:      https://github.com/dorley174/DevOps-Core-Course/pull/new/lab04
+remote:
+To https://github.com/dorley174/DevOps-Core-Course
+ * [new branch]      lab04 -> lab04
+PS C:\DevOps\DevOps-Core-Course> .\scripts\load-env.ps1
+Loaded .env OK
+YC_CLOUD_ID=b1gca960emnn9qqikne9
+YC_FOLDER_ID=b1g82kdcn5grlmu79ano
+YC_ZONE=ru-central1-a
+YC_SERVICE_ACCOUNT_KEY_FILE=C:\DevOps\DevOps-Core-Course\key.json
+PS C:\DevOps\DevOps-Core-Course> winget install -e --id Pulumi.Pulumi
+Найдено Pulumi [Pulumi.Pulumi] Версия 3.222.0
+Лицензия на это приложение предоставлена вам владельцем.
+Корпорация Майкрософт не несет ответственность за сторонние пакеты и не предоставляет для них никакие лицензии.
+Скачивание https://github.com/pulumi/pulumi-winget/releases/download/v3.222.0/pulumi-3.222.0-windows-x64.msi
+  ██████████████████████████████  87.8 MB / 87.8 MB
+Хэш установщика успешно проверен
+Запуск установки пакета...
+Успешно установлено
+PS C:\DevOps\DevOps-Core-Course> pulumi version                             
+pulumi : Имя "pulumi" не распознано как имя командлета, функции, файла сценария или выполняемой программы. Проверьте прави
+льность написания имени, а также наличие и правильность пути, после чего повторите попытку.
+строка:1 знак:1
++ pulumi version
++ ~~~~~~
+    + CategoryInfo          : ObjectNotFound: (pulumi:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+PS C:\DevOps\DevOps-Core-Course> 
+ *  Журнал восстановлен 
+
+
+PS C:\DevOps\DevOps-Core-Course> .\scripts\load-env.ps1
+Loaded .env OK
+YC_CLOUD_ID=b1gca960emnn9qqikne9
+YC_FOLDER_ID=b1g82kdcn5grlmu79ano
+YC_ZONE=ru-central1-a
+YC_SERVICE_ACCOUNT_KEY_FILE=C:\DevOps\DevOps-Core-Course\key.json
+PS C:\DevOps\DevOps-Core-Course> pulumi version        
+v3.222.0
+PS C:\DevOps\DevOps-Core-Course> mkdir pulumi
+mkdir : Элемент с указанным именем C:\DevOps\DevOps-Core-Course\pulumi уже существует.
+строка:1 знак:1
++ mkdir pulumi
++ ~~~~~~~~~~~~
+    + CategoryInfo          : ResourceExists: (C:\DevOps\DevOps-Core-Course\pulumi:String) [New-Item], IOException
+    + FullyQualifiedErrorId : DirectoryExist,Microsoft.PowerShell.Commands.NewItemCommand
+
+PS C:\DevOps\DevOps-Core-Course> cd pulumi
+PS C:\DevOps\DevOps-Core-Course\pulumi> pulumi new python
+error: C:\DevOps\DevOps-Core-Course\pulumi is not empty; use --force to continue and overwrite existing files, or use --dir to specify an empty directory.
+PS C:\DevOps\DevOps-Core-Course\pulumi> tree /f
+Структура папок
+Серийный номер тома: 56C3-7760
+C:.
+│   .gitignore
+│   Pulumi.yaml
+│   README.md
+│   requirements.txt
+│   __main__.py
+│
+└───__pycache__
+        __main__.cpython-311.pyc
+
+PS C:\DevOps\DevOps-Core-Course\pulumi> python -m venv venv
+PS C:\DevOps\DevOps-Core-Course\pulumi> .\venv\Scripts\activate
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> pip install -r requirements.txt
+Collecting pulumi<4.0.0,>=3.0.0 (from -r requirements.txt (line 1))
+  Downloading pulumi-3.222.0-py3-none-any.whl.metadata (3.8 kB)
+Collecting pulumi-yandex (from -r requirements.txt (line 2))
+  Downloading pulumi_yandex-0.13.0.tar.gz (425 kB)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Collecting debugpy~=1.8.7 (from pulumi<4.0.0,>=3.0.0->-r requirements.txt (line 1))
+  Downloading debugpy-1.8.20-cp313-cp313-win_amd64.whl.metadata (1.5 kB)
+Collecting dill~=0.4 (from pulumi<4.0.0,>=3.0.0->-r requirements.txt (line 1))
+  Downloading dill-0.4.1-py3-none-any.whl.metadata (10 kB)
+Collecting grpcio<2,>=1.68.1 (from pulumi<4.0.0,>=3.0.0->-r requirements.txt (line 1))
+  Downloading grpcio-1.78.0-cp313-cp313-win_amd64.whl.metadata (3.9 kB)
+Requirement already satisfied: pip>=24.3.1 in c:\devops\devops-core-course\pulumi\venv\lib\site-packages (from pulumi<4.0.0,>=3.0.0->-r requirements.txt (line 1)) (24.3.1)
+Collecting protobuf<7,>=3.20.3 (from pulumi<4.0.0,>=3.0.0->-r requirements.txt (line 1))
+  Downloading protobuf-6.33.5-cp310-abi3-win_amd64.whl.metadata (593 bytes)
+Collecting pyyaml~=6.0 (from pulumi<4.0.0,>=3.0.0->-r requirements.txt (line 1))
+  Downloading pyyaml-6.0.3-cp313-cp313-win_amd64.whl.metadata (2.4 kB)
+Collecting semver~=3.0 (from pulumi<4.0.0,>=3.0.0->-r requirements.txt (line 1))
+  Downloading semver-3.0.4-py3-none-any.whl.metadata (6.8 kB)
+Collecting parver>=0.2.1 (from pulumi-yandex->-r requirements.txt (line 2))
+  Downloading parver-0.5-py3-none-any.whl.metadata (2.7 kB)
+Collecting typing-extensions~=4.12 (from grpcio<2,>=1.68.1->pulumi<4.0.0,>=3.0.0->-r requirements.txt (line 1))
+  Using cached typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting arpeggio>=1.7 (from parver>=0.2.1->pulumi-yandex->-r requirements.txt (line 2))
+  Downloading Arpeggio-2.0.3-py2.py3-none-any.whl.metadata (2.4 kB)
+Collecting attrs>=19.2 (from parver>=0.2.1->pulumi-yandex->-r requirements.txt (line 2))
+  Using cached attrs-25.4.0-py3-none-any.whl.metadata (10 kB)
+Downloading pulumi-3.222.0-py3-none-any.whl (390 kB)
+Downloading debugpy-1.8.20-cp313-cp313-win_amd64.whl (5.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.4/5.4 MB 7.1 MB/s eta 0:00:00
+Downloading dill-0.4.1-py3-none-any.whl (120 kB)
+Downloading grpcio-1.78.0-cp313-cp313-win_amd64.whl (4.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.8/4.8 MB 7.6 MB/s eta 0:00:00
+Downloading parver-0.5-py3-none-any.whl (15 kB)
+Downloading protobuf-6.33.5-cp310-abi3-win_amd64.whl (437 kB)
+Downloading pyyaml-6.0.3-cp313-cp313-win_amd64.whl (154 kB)
+Downloading semver-3.0.4-py3-none-any.whl (17 kB)
+Downloading Arpeggio-2.0.3-py2.py3-none-any.whl (54 kB)
+Using cached attrs-25.4.0-py3-none-any.whl (67 kB)
+Using cached typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+Building wheels for collected packages: pulumi-yandex
+  Building wheel for pulumi-yandex (pyproject.toml) ... done
+  Created wheel for pulumi-yandex: filename=pulumi_yandex-0.13.0-py3-none-any.whl size=606675 sha256=8441929cfc6b1f5855695216aff4c9946e00cbdecca3d15f56ed027966eaa71e
+  Stored in directory: c:\users\данил\appdata\local\pip\cache\wheels\d0\b7\cf\9a6c587521036e8cbd68fa735d2f5d352bb7fb4f71d8d5aaac
+Successfully built pulumi-yandex
+Installing collected packages: arpeggio, typing-extensions, semver, pyyaml, protobuf, dill, debugpy, attrs, parver, grpcio, pulumi, pulumi-yandex
+Successfully installed arpeggio-2.0.3 attrs-25.4.0 debugpy-1.8.20 dill-0.4.1 grpcio-1.78.0 parver-0.5 protobuf-6.33.5 pulumi-3.222.0 pulumi-yandex-0.13.0 pyyaml-6.0.3 semver-3.0.4 typing-extensions-4.15.0
+
+[notice] A new release of pip is available: 24.3.1 -> 26.0.1
+[notice] To update, run: python.exe -m pip install --upgrade pip
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> pulumi version
+v3.222.0
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> python --version
+Python 3.13.1
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> pulumi login file://C:\DevOps\DevOps-Core-Course\pulumi\.pulumi-state
+error: problem logging in: unable to open bucket file:///C:/DevOps/DevOps-Core-Course/pulumi/.pulumi-state?no_tmp_dir=true: GetFileAttributesEx C:\DevOps\DevOps-Core-Course\pulumi\.pulumi-state: The system cannot find the file specified.
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> New-Item -ItemType Directory -Force .pulumi-state | Out-Null
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> pulumi login file://C:\DevOps\DevOps-Core-Course\pulumi\.pulumi-state
+Logged in to Dorley as Dorley\Данил (file://C:/DevOps/DevOps-Core-Course/pulumi/.pulumi-state)
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> pulumi whoami
+Dorley\Данил
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> pulumi stack ls
+NAME  LAST UPDATE  RESOURCE COUNT
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> pulumi stack init dev
+Enter your passphrase to protect config/secrets:
+Re-enter your passphrase to confirm:
+Created stack 'dev'
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> cd C:\DevOps\DevOps-Core-Course
+(venv) PS C:\DevOps\DevOps-Core-Course> .\scripts\load-env.ps1
+Loaded .env OK
+YC_CLOUD_ID=b1gca960emnn9qqikne9
+YC_FOLDER_ID=b1g82kdcn5grlmu79ano
+YC_ZONE=ru-central1-a
+YC_SERVICE_ACCOUNT_KEY_FILE=C:\DevOps\DevOps-Core-Course\key.json
+(venv) PS C:\DevOps\DevOps-Core-Course> cd pulumi
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> .\venv\Scripts\activate
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> pulumi config set zone ru-central1-a
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> pulumi config set subnetCidr 10.10.0.0/24
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> pulumi config set allowedSshCidr "95.111.204.70/32"
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> pulumi config set sshUser ubuntu
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> pulumi config set sshPublicKeyPath "~/.ssh/lab04_ed25519.pub"
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> pulumi config set imageFamily ubuntu-2404-lts
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> pulumi preview
+Enter your passphrase to unlock config/secrets
+    (set PULUMI_CONFIG_PASSPHRASE or PULUMI_CONFIG_PASSPHRASE_FILE to remember):
+Enter your passphrase to unlock config/secrets
+Previewing update (dev):
+     Type                 Name                 Plan       Info                                                             
+ +   pulumi:pulumi:Stack  lab04-pulumi-yc-dev  create     1 error
+Diagnostics:
+  pulumi:pulumi:Stack (lab04-pulumi-yc-dev):
+    error: Program failed with an unhandled exception:
+    Traceback (most recent call last):
+      File "C:\DevOps\DevOps-Core-Course\pulumi\__main__.py", line 4, in <module>
+        import pulumi_yandex as yandex
+      File "C:\DevOps\DevOps-Core-Course\pulumi\venv\Lib\site-packages\pulumi_yandex\__init__.py", line 5, in <module>     
+        from . import _utilities
+      File "C:\DevOps\DevOps-Core-Course\pulumi\venv\Lib\site-packages\pulumi_yandex\_utilities.py", line 10, in <module>  
+        import pkg_resources
+    ModuleNotFoundError: No module named 'pkg_resources'
+
+Resources:
+    + 1 to create
+    1 errored
+
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> python -m pip install --upgrade pip setuptools wheel
+Requirement already satisfied: pip in c:\devops\devops-core-course\pulumi\venv\lib\site-packages (24.3.1)
+Collecting pip
+  Downloading pip-26.0.1-py3-none-any.whl.metadata (4.7 kB)
+Collecting setuptools
+  Using cached setuptools-82.0.0-py3-none-any.whl.metadata (6.6 kB)
+Collecting wheel
+  Downloading wheel-0.46.3-py3-none-any.whl.metadata (2.4 kB)
+Collecting packaging>=24.0 (from wheel)
+  Using cached packaging-26.0-py3-none-any.whl.metadata (3.3 kB)
+Downloading pip-26.0.1-py3-none-any.whl (1.8 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 8.3 MB/s eta 0:00:00
+Using cached setuptools-82.0.0-py3-none-any.whl (1.0 MB)
+Downloading wheel-0.46.3-py3-none-any.whl (30 kB)
+Using cached packaging-26.0-py3-none-any.whl (74 kB)
+Installing collected packages: setuptools, pip, packaging, wheel
+  Attempting uninstall: pip
+    Found existing installation: pip 24.3.1
+    Uninstalling pip-24.3.1:
+      Successfully uninstalled pip-24.3.1
+Successfully installed packaging-26.0 pip-26.0.1 setuptools-82.0.0 wheel-0.46.3
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> python -c "import pkg_resources; print('pkg_resources OK')"
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import pkg_resources; print('pkg_resources OK')
+    ^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'pkg_resources'
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> winget install -e --id Python.Python.3.12
+Найден существующий установленный пакет. Попытка обновления установленного пакета...
+Найдено Python 3.12 [Python.Python.3.12] Версия 3.12.10
+Лицензия на это приложение предоставлена вам владельцем.
+Корпорация Майкрософт не несет ответственность за сторонние пакеты и не предоставляет для них никакие лицензии.
+Скачивание https://www.python.org/ftp/python/3.12.10/python-3.12.10-amd64.exe
+  ██████████████████████████████  25.7 MB / 25.7 MB
+Хэш установщика успешно проверен
+Запуск установки пакета...
+Вы отменили установку.
+Сбой установки с кодом выхода: 1602
+Журнал установщика доступен по адресу: C:\Users\Данил\AppData\Local\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\LocalState\DiagOutputDir\Python.Python.3.12.3.12.10-26-02-19-23-43-29.log
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> pip uninstall -y setuptools
+Found existing installation: setuptools 82.0.0
+Uninstalling setuptools-82.0.0:
+  Successfully uninstalled setuptools-82.0.0
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> pip install setuptools==80.9.0
+Collecting setuptools==80.9.0
+  Downloading setuptools-80.9.0-py3-none-any.whl.metadata (6.6 kB)
+Downloading setuptools-80.9.0-py3-none-any.whl (1.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 6.8 MB/s  0:00:00
+Installing collected packages: setuptools
+Successfully installed setuptools-80.9.0
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> python -c "import pkg_resources; print('pkg_resources OK')"
+<string>:1: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources; print('pkg_resources OK')
+pkg_resources OK
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> pulumi stack ls
+NAME  LAST UPDATE     RESOURCE COUNT
+dev*  11 minutes ago  0
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> pulumi stack select dev
+(venv) PS C:\DevOps\DevOps-Core-Course\pulumi> pulumi config
+KEY               VALUE
+allowedSshCidr    95.111.204.70/32
+imageFamily       ubuntu-2404-lts
+sshPublicKeyPath  ~/.ssh/lab04_ed25519.pub
+sshUser           ubuntu
+subnetCidr        10.10.0.0/24
+zone              ru-central1-a
