@@ -1,0 +1,57 @@
+name: Terraform CI
+
+on:
+  pull_request:
+    paths:
+      - "terraform/**"
+      - ".github/workflows/terraform-ci.yml"
+  push:
+    branches:
+      - master
+      - lab04
+    paths:
+      - "terraform/**"
+      - ".github/workflows/terraform-ci.yml"
+
+jobs:
+  terraform-check:
+    name: "fmt / validate / tflint"
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        workdir:
+          - terraform
+          - terraform/github
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.workdir }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive
+
+      - name: Terraform init (no backend)
+        run: terraform init -backend=false
+
+      - name: Terraform validate
+        run: terraform validate -no-color
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v3
+
+      - name: TFLint init
+        run: tflint --init
+
+      - name: TFLint
+        run: tflint
