@@ -1,0 +1,14 @@
+# Лучше хранить токен в env:
+#   export GITHUB_TOKEN=...
+# или в PowerShell:
+#   $env:GITHUB_TOKEN="..."
+
+# Но если надо:
+# github_token = "..."  # НЕ КОММИТИТЬ
+
+# Если owner не задан, GitHub provider обычно берёт owner из токена.
+# github_owner = "your-username-or-org"
+
+repo_name        = "DevOps-Core-Course"
+repo_description = "DevOps course repository managed by Terraform"
+visibility       = "public"
