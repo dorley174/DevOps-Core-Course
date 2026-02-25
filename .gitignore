@@ -1,3 +1,12 @@
 test
 .env
 key.json
+# --- Ansible ---
+*.retry
+.vault_pass
+ansible/inventory/*.pyc
+ansible/inventory/__pycache__/
+__pycache__/
+
+# Do not commit real inventory with IPs if you don't want
+# ansible/inventory/hosts.ini

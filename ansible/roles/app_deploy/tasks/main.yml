@@ -1,0 +1,76 @@
+---
+- name: Ensure Docker SDK for Python is installed on target
+  ansible.builtin.apt:
+    name: python3-docker
+    state: present
+    update_cache: true
+
+- name: Login to Docker registry
+  community.docker.docker_login:
+    registry_url: "{{ (docker_registry | length > 0) | ternary(docker_registry, omit) }}"
+    username: "{{ dockerhub_username }}"
+    password: "{{ dockerhub_password }}"
+  no_log: true
+
+- name: Pull application image
+  community.docker.docker_image:
+    name: "{{ docker_image }}:{{ docker_image_tag }}"
+    source: pull
+  register: app_image_pull
+
+- name: Check current container (if exists)
+  community.docker.docker_container_info:
+    name: "{{ app_container_name }}"
+  register: app_container_info
+  failed_when: false
+
+- name: Decide if redeploy is needed
+  ansible.builtin.set_fact:
+    app_needs_redeploy: "{{ app_image_pull.changed or (not app_container_info.exists) }}"
+
+- name: Stop existing container (only if redeploy needed)
+  community.docker.docker_container:
+    name: "{{ app_container_name }}"
+    state: stopped
+  when: app_container_info.exists and app_needs_redeploy
+
+- name: Remove existing container (only if redeploy needed)
+  community.docker.docker_container:
+    name: "{{ app_container_name }}"
+    state: absent
+  when: app_container_info.exists and app_needs_redeploy
+
+- name: Run application container
+  community.docker.docker_container:
+    name: "{{ app_container_name }}"
+    image: "{{ docker_image }}:{{ docker_image_tag }}"
+    state: started
+    restart_policy: "{{ app_restart_policy }}"
+    published_ports:
+      - "{{ app_port }}:{{ container_port }}"
+    env: "{{ app_env }}"
+  notify: restart app container
+
+- name: Wait for the application port to become available
+  ansible.builtin.wait_for:
+    host: "127.0.0.1"
+    port: "{{ app_port }}"
+    timeout: 60
+
+- name: Health check (/health)
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ app_port }}/health"
+    method: GET
+    status_code: 200
+    return_content: true
+  register: app_health
+  retries: 10
+  delay: 3
+  until: app_health.status == 200
+
+- name: Verify main endpoint (/)
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ app_port }}/"
+    method: GET
+    status_code: 200
+    return_content: false

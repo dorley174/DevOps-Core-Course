@@ -1,0 +1,32 @@
+---
+# Пример dynamic inventory для Yandex Cloud (Bonus).
+# Требует установленного Python SDK и/или ansible collection, в зависимости от плагина.
+# Скопируйте в ansible/inventory/yandex.yml и заполните параметры.
+#
+# ВНИМАНИЕ: точное имя плагина и поля могут отличаться в зависимости от коллекции.
+# См. `ansible-doc -t inventory -l | grep -i yandex`.
+
+plugin: yandex.cloud.yandex_compute
+
+# Один из вариантов аутентификации (пример):
+# auth_kind: serviceaccount
+# service_account_key_file: /home/<user>/.config/yandex-cloud/key.json
+
+folder_id: "CHANGE_ME_FOLDER_ID"
+
+# Группируем ВМ по label project=lab04, чтобы автоматически получить группу webservers
+filters:
+  labels.project: "lab04"
+
+# Собираем ansible_host из публичного IP
+compose:
+  ansible_host: network_interfaces[0].primary_v4_address.one_to_one_nat.address
+  ansible_user: "ubuntu"
+
+keyed_groups:
+  - key: labels.project
+    prefix: "project"
+
+# Можно дополнительно создать группу webservers
+# groups:
+#   webservers: "labels.project == 'lab04'"
