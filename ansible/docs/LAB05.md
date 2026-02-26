@@ -216,7 +216,7 @@ TODO: paste output
 
 ### 6.3 Health check
 
-From the target VM (via Ansible):
+From the target VM (via Ansible): (i will use another ip)
 
 ```bash
 ansible webservers -a "curl -i http://127.0.0.1:5000/health"
@@ -231,7 +231,19 @@ curl -i "http://$WIN_HOST_IP:5000/"
 ```
 
 ```text
-TODO: paste output
+HTTP/1.1 200 OK
+Server: Werkzeug/3.1.5 Python/3.13.1
+HTTP/1.1 200 OK
+Server: Werkzeug/3.1.5 Python/3.13.1
+Date: Thu, 26 Feb 2026 19:31:16 GMT
+Date: Thu, 26 Feb 2026 19:31:16 GMT
+Content-Type: application/json; charset=utf-8
+Content-Type: application/json; charset=utf-8
+Content-Length: 80
+Content-Length: 80
+Connection: close
+
+{"status":"healthy","timestamp":"2026-02-26T19:31:16.782Z","uptime_seconds":87}
 ```
 
 ---

@@ -1,0 +1,10 @@
+---
+dockerhub_username: "dorley174"
+dockerhub_password: ""
+
+app_name: "devops-info-service"
+docker_image: "{{ dockerhub_username }}/{{ app_name }}"
+docker_image_tag: "latest"
+
+app_port: 5000
+app_container_name: "{{ app_name }}"
