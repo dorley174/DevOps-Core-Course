@@ -1,0 +1,20 @@
+---
+# App defaults (can be overridden from group_vars/all.yml vault file)
+app_name: "devops-info-service"
+app_container_name: "{{ app_name }}"
+
+docker_image_tag: "latest"
+
+# Host->container port mapping
+app_port: 5000
+container_port: 5000
+
+# Docker container restart policy
+app_restart_policy: "unless-stopped"
+
+# Environment variables passed to container (dict)
+app_env: {}
+
+# Optional registry URL (empty means Docker Hub)
+# Example: "cr.yandex/xxx" or "ghcr.io"
+docker_registry: ""

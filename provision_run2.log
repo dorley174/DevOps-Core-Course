@@ -1,0 +1,57 @@
+
+PLAY [Provision web servers] ***************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [vagrant1]
+
+TASK [common : Update apt cache] ***********************************************
+ok: [vagrant1]
+
+TASK [common : Install common packages] ****************************************
+ok: [vagrant1]
+
+TASK [common : Set timezone] ***************************************************
+skipping: [vagrant1]
+
+TASK [docker : Install prerequisites for Docker repository] ********************
+ok: [vagrant1]
+
+TASK [docker : Ensure /etc/apt/keyrings exists] ********************************
+ok: [vagrant1]
+
+TASK [docker : Download Docker GPG key (ASCII)] ********************************
+ok: [vagrant1]
+
+TASK [docker : Check if Docker keyring already exists] *************************
+ok: [vagrant1]
+
+TASK [docker : Convert (dearmor) Docker GPG key to keyring] ********************
+skipping: [vagrant1]
+
+TASK [docker : Set correct permissions on Docker keyring] **********************
+ok: [vagrant1]
+
+TASK [docker : Set Docker APT architecture mapping] ****************************
+ok: [vagrant1]
+
+TASK [docker : Add official Docker APT repository] *****************************
+ok: [vagrant1]
+
+TASK [docker : Install Docker Engine packages] *********************************
+ok: [vagrant1]
+
+TASK [docker : Ensure Docker service is enabled and running] *******************
+ok: [vagrant1]
+
+TASK [docker : Ensure docker group exists] *************************************
+ok: [vagrant1]
+
+TASK [docker : Add user to docker group] ***************************************
+ok: [vagrant1]
+
+TASK [docker : Install Docker SDK for Python on target (for Ansible docker modules)] ***
+ok: [vagrant1]
+
+PLAY RECAP *********************************************************************
+vagrant1                   : ok=15   changed=0    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+

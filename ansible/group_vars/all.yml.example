@@ -1,0 +1,13 @@
+---
+# Пример! Настоящие значения храните в ЗАШИФРОВАННОМ файле:
+#   ansible-vault create ansible/group_vars/all.yml
+
+dockerhub_username: "CHANGE_ME"
+dockerhub_password: "CHANGE_ME"  # лучше токен, не пароль
+
+app_name: "devops-info-service"
+docker_image: "{{ dockerhub_username }}/{{ app_name }}"
+docker_image_tag: "latest"
+
+app_port: 5000
+app_container_name: "{{ app_name }}"
