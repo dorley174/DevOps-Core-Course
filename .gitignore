@@ -8,5 +8,8 @@ ansible/inventory/*.pyc
 ansible/inventory/__pycache__/
 __pycache__/
 
+# --- Vagrant ---
+.vagrant/
+
 # Do not commit real inventory with IPs if you don't want
 # ansible/inventory/hosts.ini
