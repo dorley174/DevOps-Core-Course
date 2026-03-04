@@ -1,0 +1,20 @@
+---
+# Packages that are useful on almost any Ubuntu server
+common_packages:
+  - ca-certificates
+  - curl
+  - git
+  - vim
+  - htop
+  - jq
+  - unzip
+  - python3-pip
+  - python3-venv
+  - tzdata
+
+# Default timezone (change if needed)
+common_timezone: "Europe/Moscow"
+
+# В WSL и некоторых окружениях timedatectl может быть недоступен.
+# По умолчанию timezone НЕ меняем.
+common_set_timezone: false
