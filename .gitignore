@@ -1,5 +1,9 @@
 test
 .env
+.venv
+actions-runner/
+_work/
+.runner/
 key.json
 # --- Ansible ---
 *.retry

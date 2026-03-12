@@ -13,4 +13,3 @@ app_internal_port: 8000
 
 # Extra environment variables for the container (optional)
 app_env: {}
-dockerhub_username: dorley174
