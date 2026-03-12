@@ -1,6 +1,6 @@
 # Lab05 — Ansible
 
-См. `labs/lab05.md` (задание) и `ansible/docs/LAB05.md` (отчёт).
+Check `labs/lab05.md` (task) ans `ansible/docs/LAB05.md` (report).
 
 Быстрые команды:
 
