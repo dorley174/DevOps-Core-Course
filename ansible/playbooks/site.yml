@@ -4,6 +4,11 @@
   become: true
 
   roles:
-    - common
-    - docker
-    - app_deploy
+    - role: common
+      tags:
+        - common
+
+    # Docker role is executed automatically as a dependency of web_app.
+    - role: web_app
+      tags:
+        - web_app

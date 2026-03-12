@@ -1,0 +1,89 @@
+---
+
+# Lab06 Task 3: wipe logic runs first (only when variable is true).
+- name: Include wipe tasks
+  ansible.builtin.include_tasks: wipe.yml
+  tags:
+    - web_app_wipe
+
+
+# Lab06 Task 2: deploy with Docker Compose v2.
+- name: Deploy application with Docker Compose
+  block:
+    - name: Create application directory
+      ansible.builtin.file:
+        path: "{{ compose_project_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Template docker-compose.yml
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: "{{ compose_project_dir }}/docker-compose.yml"
+        mode: "0644"
+
+    # Optional: if the image is private, login must be done on the target host.
+    - name: Login to Docker registry (optional)
+      community.docker.docker_login:
+        registry_url: "{{ (docker_registry | length > 0) | ternary(docker_registry, omit) }}"
+        username: "{{ dockerhub_username }}"
+        password: "{{ dockerhub_password }}"
+      no_log: true
+      when:
+        - dockerhub_username is defined
+        - dockerhub_password is defined
+        - dockerhub_password | length > 0
+
+    # Keep idempotency: pull only if image changed.
+    - name: Pull application image
+      community.docker.docker_image:
+        name: "{{ docker_image }}:{{ docker_tag }}"
+        source: pull
+      register: web_app_image_pull
+
+    - name: Deploy (docker compose up)
+      community.docker.docker_compose_v2:
+        project_src: "{{ compose_project_dir }}"
+        state: present
+        pull: never
+        recreate: auto
+      register: web_app_compose
+
+    - name: Wait for the application port to become available
+      ansible.builtin.wait_for:
+        host: "127.0.0.1"
+        port: "{{ app_port }}"
+        timeout: 60
+
+    - name: Health check (/health)
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ app_port }}/health"
+        method: GET
+        status_code: 200
+        return_content: true
+      register: web_app_health
+      retries: 10
+      delay: 3
+      until: web_app_health.status == 200
+
+    - name: Verify main endpoint (/)
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ app_port }}/"
+        method: GET
+        status_code: 200
+        return_content: false
+
+  rescue:
+    - name: Deployment failure hint
+      ansible.builtin.debug:
+        msg: |
+          Web app deployment failed.
+          Try checking logs on the target host:
+            cd {{ compose_project_dir }}
+            docker compose logs --no-color --tail=200
+
+  tags:
+    - app_deploy
+    - compose

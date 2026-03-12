@@ -1,5 +1,6 @@
 test
 .env
+.venv
 key.json
 # --- Ansible ---
 *.retry

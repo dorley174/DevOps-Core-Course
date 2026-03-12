@@ -1,0 +1,97 @@
+name: Ansible Deployment
+
+on:
+  push:
+    branches: [ lab06, master ]
+    paths:
+      - 'ansible/**'
+      - '.github/workflows/ansible-deploy.yml'
+  pull_request:
+    branches: [ lab06, master ]
+    paths:
+      - 'ansible/**'
+      - '.github/workflows/ansible-deploy.yml'
+
+jobs:
+  lint:
+    name: Ansible Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Ansible + ansible-lint
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible ansible-lint
+
+      - name: Install Ansible collections
+        run: |
+          ansible-galaxy collection install -r ansible/requirements.yml
+
+      - name: Run ansible-lint
+        run: |
+          cd ansible
+          ansible-lint -p playbooks/*.yml roles
+
+  deploy:
+    name: Deploy Application
+    needs: lint
+
+    # For a local Vagrant/VirtualBox setup behind NAT, the simplest free option
+    # is a self-hosted Linux runner on the same machine (for example, inside WSL2).
+    runs-on: [self-hosted, linux]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Ansible (self-hosted)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install --user --upgrade pip
+          python3 -m pip install --user ansible
+
+      - name: Add user-local bin to PATH
+        shell: bash
+        run: |
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Install Ansible collections
+        shell: bash
+        run: |
+          set -euo pipefail
+          ansible-galaxy collection install -r ansible/requirements.yml
+
+      - name: Deploy with Ansible
+        shell: bash
+        env:
+          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+        run: |
+          set -euo pipefail
+          cd ansible
+
+          if [[ -n "${ANSIBLE_VAULT_PASSWORD:-}" ]]; then
+            trap 'rm -f /tmp/vault_pass' EXIT
+            printf '%s' "${ANSIBLE_VAULT_PASSWORD}" > /tmp/vault_pass
+            ansible-playbook playbooks/deploy.yml --vault-password-file /tmp/vault_pass
+          else
+            ansible-playbook playbooks/deploy.yml
+          fi
+
+      - name: Verify deployment
+        shell: bash
+        env:
+          VM_HOST: ${{ secrets.VM_HOST }}
+        run: |
+          set -euo pipefail
+          HOST="${VM_HOST:-127.0.0.1}"
+          curl --retry 10 --retry-delay 3 --retry-connrefused -fsS "http://${HOST}:8000/health"
+          curl --retry 10 --retry-delay 3 --retry-connrefused -fsS "http://${HOST}:8000/"

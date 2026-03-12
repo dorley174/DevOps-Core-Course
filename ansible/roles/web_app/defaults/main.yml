@@ -1,0 +1,45 @@
+---
+
+# ---------------------------------------------------------------------------
+# Web application deployment (Docker Compose)
+# ---------------------------------------------------------------------------
+
+# Service/container name
+app_name: devops-app
+
+# Docker image reference (repository part, without tag)
+# Example: "your_dockerhub_username/devops-info-service"
+docker_image: "{{ (dockerhub_username is defined and dockerhub_username | length > 0) | ternary(dockerhub_username ~ '/' ~ app_name, app_name) }}"
+
+# Docker image tag/version
+# Backward compatible with Lab05 variable name `docker_image_tag`.
+docker_tag: "{{ docker_image_tag | default('latest') }}"
+
+# Host -> container port mapping
+app_port: 8000
+
+# Internal container port. Backward compatible with Lab05 variable `container_port`.
+app_internal_port: "{{ container_port | default(8000) }}"
+
+# Where docker-compose.yml will be stored on the target host
+compose_project_dir: "/opt/{{ app_name }}"
+
+# Compose file version header (mainly for readability; Compose v2 doesn't require it)
+docker_compose_version: "3.8"
+
+# Extra environment variables passed to the container (merged in the template)
+app_env: {}
+
+# Optional registry URL (empty means Docker Hub)
+docker_registry: ""
+
+# ---------------------------------------------------------------------------
+# Wipe Logic (Lab06 Task 3)
+# ---------------------------------------------------------------------------
+# Double-gated safety:
+#   1) variable web_app_wipe=true
+#   2) tag web_app_wipe (for wipe-only runs)
+web_app_wipe: false
+
+# Optional: remove the image during wipe (useful to save disk space)
+web_app_wipe_remove_image: false
