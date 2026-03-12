@@ -11,10 +11,11 @@
     username: "{{ dockerhub_username }}"
     password: "{{ dockerhub_password }}"
   no_log: true
+  when: dockerhub_password is defined and dockerhub_password | length > 0
 
 - name: Pull application image
   community.docker.docker_image:
-    name: "{{ docker_image }}:{{ docker_image_tag }}"
+    name: "{{ (docker_image | default(dockerhub_username ~ '/' ~ app_name)) }}:{{ (docker_image_tag | default('latest')) }}"
     source: pull
   register: app_image_pull
 
@@ -43,7 +44,7 @@
 - name: Run application container
   community.docker.docker_container:
     name: "{{ app_container_name }}"
-    image: "{{ docker_image }}:{{ docker_image_tag }}"
+    image: "{{ (docker_image | default(dockerhub_username ~ '/' ~ app_name)) }}:{{ (docker_image_tag | default('latest')) }}"
     state: started
     restart_policy: "{{ app_restart_policy }}"
     published_ports:

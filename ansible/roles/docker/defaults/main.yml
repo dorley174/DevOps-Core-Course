@@ -1,7 +1,7 @@
 ---
 # User to be added to docker group.
-# By default uses the SSH user (usually ubuntu).
-docker_user: "{{ ansible_user | default('ubuntu') }}"
+# By default uses the SSH user (Vagrant boxes usually use "vagrant").
+docker_user: "{{ ansible_user | default('vagrant') }}"
 
 # Official Docker repository key and repo
 # (Ubuntu)
