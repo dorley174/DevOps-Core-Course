@@ -44,30 +44,26 @@ jobs:
     name: Deploy Application
     needs: lint
 
-    # For a local Vagrant/VirtualBox setup behind NAT, the simplest free option
-    # is a self-hosted Linux runner on the same machine (for example, inside WSL2).
     runs-on: [self-hosted, linux]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Ansible (self-hosted)
+      - name: Set up Python venv
         shell: bash
         run: |
           set -euo pipefail
-          python3 -m pip install --user --upgrade pip
-          python3 -m pip install --user ansible
-
-      - name: Add user-local bin to PATH
-        shell: bash
-        run: |
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          python3 -m venv .venv
+          . .venv/bin/activate
+          python -m pip install --upgrade pip
+          python -m pip install ansible ansible-lint
 
       - name: Install Ansible collections
         shell: bash
         run: |
           set -euo pipefail
+          . .venv/bin/activate
           ansible-galaxy collection install -r ansible/requirements.yml
 
       - name: Deploy with Ansible
@@ -76,14 +72,16 @@ jobs:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
         run: |
           set -euo pipefail
+          . .venv/bin/activate
+          export ANSIBLE_CONFIG="$GITHUB_WORKSPACE/ansible/ansible.cfg"
           cd ansible
 
           if [[ -n "${ANSIBLE_VAULT_PASSWORD:-}" ]]; then
             trap 'rm -f /tmp/vault_pass' EXIT
             printf '%s' "${ANSIBLE_VAULT_PASSWORD}" > /tmp/vault_pass
-            ansible-playbook playbooks/deploy.yml --vault-password-file /tmp/vault_pass
+            ansible-playbook -i inventory/hosts.ini playbooks/deploy.yml --vault-password-file /tmp/vault_pass
           else
-            ansible-playbook playbooks/deploy.yml
+            ansible-playbook -i inventory/hosts.ini playbooks/deploy.yml
           fi
 
       - name: Verify deployment
