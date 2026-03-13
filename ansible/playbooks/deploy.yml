@@ -1,0 +1,10 @@
+---
+- name: Deploy application
+  hosts: webservers
+  become: true
+
+  roles:
+    # Docker is a dependency of web_app (see roles/web_app/meta/main.yml)
+    - role: web_app
+      tags:
+        - web_app

@@ -1,0 +1,15 @@
+---
+dockerhub_username: "dorley174"
+dockerhub_password: ""
+
+# Application / image
+app_name: "devops-info-service"
+docker_image: "{{ dockerhub_username }}/{{ app_name }}"
+docker_tag: "latest"
+
+# Expose the app on the course-standard port.
+app_port: 8000
+app_internal_port: 8000
+
+# Extra environment variables for the container (optional)
+app_env: {}

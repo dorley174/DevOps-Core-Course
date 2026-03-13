@@ -1,0 +1,17 @@
+---
+# Example only. Store real values in an encrypted file, for example:
+#   ansible-vault create ansible/group_vars/all.yml
+
+dockerhub_username: "CHANGE_ME"
+dockerhub_password: "CHANGE_ME"  # Prefer a token instead of a password
+
+app_name: "devops-info-service"
+docker_image: "{{ dockerhub_username }}/{{ app_name }}"
+docker_tag: "latest"
+
+# Course default is 8000, but you can change it if your lab setup requires it.
+app_port: 8000
+app_internal_port: 8000
+
+# Extra environment variables for the container (dict)
+app_env: {}

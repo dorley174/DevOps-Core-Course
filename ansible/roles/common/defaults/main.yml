@@ -1,0 +1,35 @@
+---
+# Packages that are useful on almost any Ubuntu server
+common_packages:
+  - ca-certificates
+  - curl
+  - git
+  - vim
+  - htop
+  - jq
+  - unzip
+  - python3-pip
+  - python3-venv
+  - tzdata
+
+# Default timezone (change if needed)
+common_timezone: "Europe/Moscow"
+
+# In WSL and some minimal environments, timedatectl may be unavailable.
+# By default, timezone changes are disabled.
+common_set_timezone: false
+
+# ---------------------------------------------------------------------------
+# User management (optional)
+# ---------------------------------------------------------------------------
+# Lab06 requires a "users" block. To avoid unexpected changes on shared hosts,
+# this is disabled by default (empty list => no-op).
+#
+# Example:
+# common_users:
+#   - name: devops
+#     groups: sudo
+#     sudo_nopasswd: true
+#     authorized_keys:
+#       - "ssh-ed25519 AAAA... your_key"
+common_users: []

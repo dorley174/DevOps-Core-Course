@@ -1,0 +1,7 @@
+---
+
+# Role dependencies ensure correct execution order.
+# Lab06 requirement: Docker must be installed before deploying the web app.
+
+dependencies:
+  - role: docker

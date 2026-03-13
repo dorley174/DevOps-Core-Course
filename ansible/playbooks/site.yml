@@ -1,0 +1,14 @@
+---
+- name: Provision and deploy
+  hosts: webservers
+  become: true
+
+  roles:
+    - role: common
+      tags:
+        - common
+
+    # Docker role is executed automatically as a dependency of web_app.
+    - role: web_app
+      tags:
+        - web_app
