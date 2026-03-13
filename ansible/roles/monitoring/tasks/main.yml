@@ -1,0 +1,117 @@
+---
+- name: Deploy monitoring stack
+  block:
+    - name: Create monitoring directory structure
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+      loop:
+        - "{{ monitoring_project_dir }}"
+        - "{{ monitoring_project_dir }}/loki"
+        - "{{ monitoring_project_dir }}/promtail"
+        - "{{ monitoring_project_dir }}/grafana"
+        - "{{ monitoring_project_dir }}/grafana/provisioning"
+        - "{{ monitoring_project_dir }}/grafana/provisioning/datasources"
+        - "{{ monitoring_project_dir }}/grafana/provisioning/dashboards"
+        - "{{ monitoring_project_dir }}/grafana/dashboards"
+        - "{{ monitoring_project_dir }}/app-python"
+
+    - name: Copy application source files for local image build
+      ansible.builtin.copy:
+        src: "{{ monitoring_app_source_dir }}/{{ item }}"
+        dest: "{{ monitoring_project_dir }}/app-python/{{ item }}"
+        owner: root
+        group: root
+        mode: "0644"
+      loop: "{{ monitoring_app_source_files }}"
+
+    - name: Template monitoring environment file
+      ansible.builtin.template:
+        src: env.j2
+        dest: "{{ monitoring_project_dir }}/.env"
+        owner: root
+        group: root
+        mode: "0600"
+
+    - name: Template monitoring stack files
+      ansible.builtin.template:
+        src: "{{ item.src }}"
+        dest: "{{ monitoring_project_dir }}/{{ item.dest }}"
+        owner: root
+        group: root
+        mode: "0644"
+      loop:
+        - { src: 'docker-compose.yml.j2', dest: 'docker-compose.yml' }
+        - { src: 'loki-config.yml.j2', dest: 'loki/config.yml' }
+        - { src: 'promtail-config.yml.j2', dest: 'promtail/config.yml' }
+        - { src: 'grafana-datasource.yml.j2', dest: 'grafana/provisioning/datasources/loki.yml' }
+        - { src: 'grafana-dashboard-provider.yml.j2', dest: 'grafana/provisioning/dashboards/dashboard-provider.yml' }
+        - { src: 'grafana-dashboard.json.j2', dest: 'grafana/dashboards/lab07-logging.json' }
+
+    - name: Deploy monitoring stack with Docker Compose v2
+      community.docker.docker_compose_v2:
+        project_src: "{{ monitoring_project_dir }}"
+        project_name: "{{ monitoring_compose_project_name }}"
+        state: present
+        build: always
+        recreate: auto
+      register: monitoring_compose
+
+    - name: Wait for Loki to become ready
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ monitoring_loki_port }}/ready"
+        method: GET
+        status_code: 200
+      register: loki_ready
+      retries: 20
+      delay: 3
+      until: loki_ready.status == 200
+
+    - name: Wait for Grafana API health endpoint
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ monitoring_grafana_port }}/api/health"
+        method: GET
+        user: "{{ monitoring_grafana_admin_user }}"
+        password: "{{ monitoring_grafana_admin_password }}"
+        force_basic_auth: true
+        status_code: 200
+      register: grafana_health
+      retries: 20
+      delay: 3
+      until: grafana_health.status == 200
+
+    - name: Wait for monitored application health endpoint
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ monitoring_app_port }}/health"
+        method: GET
+        status_code: 200
+      register: monitoring_app_health
+      retries: 20
+      delay: 3
+      until: monitoring_app_health.status == 200
+
+    - name: Verify Loki data source was provisioned
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ monitoring_grafana_port }}/api/datasources/uid/{{ monitoring_grafana_datasource_uid }}"
+        method: GET
+        user: "{{ monitoring_grafana_admin_user }}"
+        password: "{{ monitoring_grafana_admin_password }}"
+        force_basic_auth: true
+        status_code: 200
+
+  rescue:
+    - name: Monitoring deployment failure hint
+      ansible.builtin.debug:
+        msg: |
+          Monitoring stack deployment failed.
+          Helpful follow-up commands on the target host:
+            cd {{ monitoring_project_dir }}
+            docker compose ps
+            docker compose logs --no-color --tail=200
+
+  tags:
+    - monitoring
+    - monitoring_deploy

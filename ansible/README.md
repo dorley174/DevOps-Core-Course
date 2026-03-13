@@ -49,3 +49,13 @@ Workflow file: `.github/workflows/ansible-deploy.yml`.
 
 For Vagrant/VirtualBox setups behind NAT, prefer a **self-hosted Linux runner** on the same machine
 where you run Ansible (for example, WSL2 Ubuntu). This avoids inbound SSH exposure and stays free.
+
+## Lab07 monitoring stack
+
+```bash
+# Deploy Loki + Promtail + Grafana + app stack on the target VM
+ansible-playbook -i inventory/hosts.ini playbooks/deploy-monitoring.yml
+```
+
+The monitoring role builds the Python app locally on the target VM, so you do not need to push a new
+application image to Docker Hub for Lab07.

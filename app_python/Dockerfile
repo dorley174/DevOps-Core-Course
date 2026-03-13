@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1
 
 # Production-oriented image for a small Flask app.
 # Pin a specific Python version for reproducible builds.

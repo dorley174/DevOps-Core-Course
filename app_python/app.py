@@ -9,14 +9,17 @@ Endpoints:
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 import platform
 import socket
+import sys
+import time
 from datetime import datetime, timezone
 from typing import Any, Dict
 
-from flask import Flask, jsonify, request
+from flask import Flask, g, jsonify, request
 
 # -----------------------------------------------------------------------------
 # App & Config
@@ -29,42 +32,82 @@ PORT: int = int(os.getenv("PORT", "5000"))
 DEBUG: bool = os.getenv("DEBUG", "False").strip().lower() == "true"
 
 SERVICE_NAME = "devops-info-service"
-SERVICE_VERSION = "1.0.0"
+SERVICE_VERSION = "1.1.0"
 SERVICE_DESCRIPTION = "DevOps course info service"
 SERVICE_FRAMEWORK = "Flask"
 
 START_TIME_UTC = datetime.now(timezone.utc)
 
+
 # -----------------------------------------------------------------------------
 # Logging
 # -----------------------------------------------------------------------------
 
-logging.basicConfig(
-    level=logging.DEBUG if DEBUG else logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-)
-logger = logging.getLogger("devops-info-service")
-
-
-@app.before_request
-def log_request() -> None:
-    logger.debug("Request: %s %s", request.method, request.path)
-
-
-@app.after_request
-def add_headers(response):
-    # Helpful defaults
-    response.headers["Content-Type"] = "application/json; charset=utf-8"
-    return response
-
-
-# -----------------------------------------------------------------------------
-# Helpers
-# -----------------------------------------------------------------------------
 
 def iso_utc_now_z() -> str:
     """Return current UTC time in ISO format with 'Z' suffix."""
     return datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z")
+
+
+class JSONFormatter(logging.Formatter):
+    """Small JSON formatter for container-friendly structured logs."""
+
+    EXTRA_FIELDS = (
+        "event",
+        "service",
+        "version",
+        "method",
+        "path",
+        "status_code",
+        "client_ip",
+        "duration_ms",
+        "user_agent",
+    )
+
+    def format(self, record: logging.LogRecord) -> str:
+        payload: Dict[str, Any] = {
+            "timestamp": iso_utc_now_z(),
+            "level": record.levelname,
+            "logger": record.name,
+            "message": record.getMessage(),
+        }
+
+        for field in self.EXTRA_FIELDS:
+            value = getattr(record, field, None)
+            if value is not None:
+                payload[field] = value
+
+        if record.exc_info:
+            payload["exception"] = self.formatException(record.exc_info)
+
+        return json.dumps(payload, ensure_ascii=False)
+
+
+
+def configure_logging() -> logging.Logger:
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(JSONFormatter())
+
+    root_logger = logging.getLogger()
+    root_logger.handlers.clear()
+    root_logger.addHandler(handler)
+    root_logger.setLevel(logging.DEBUG if DEBUG else logging.INFO)
+
+    for logger_name in ("werkzeug", "gunicorn.error", "gunicorn.access"):
+        current_logger = logging.getLogger(logger_name)
+        current_logger.handlers.clear()
+        current_logger.propagate = True
+        current_logger.setLevel(logging.DEBUG if DEBUG else logging.INFO)
+
+    return logging.getLogger(SERVICE_NAME)
+
+
+logger = configure_logging()
+
+
+# -----------------------------------------------------------------------------
+# Request hooks
+# -----------------------------------------------------------------------------
 
 
 def get_client_ip() -> str:
@@ -77,6 +120,50 @@ def get_client_ip() -> str:
         # "client, proxy1, proxy2"
         return forwarded_for.split(",")[0].strip()
     return request.remote_addr or "unknown"
+
+
+@app.before_request
+def log_request_started() -> None:
+    g.request_started_at = time.perf_counter()
+    logger.debug(
+        "request_started",
+        extra={
+            "event": "request_started",
+            "service": SERVICE_NAME,
+            "version": SERVICE_VERSION,
+            "method": request.method,
+            "path": request.path,
+            "client_ip": get_client_ip(),
+            "user_agent": request.headers.get("User-Agent", "unknown"),
+        },
+    )
+
+
+@app.after_request
+def add_headers(response):
+    response.headers["Content-Type"] = "application/json; charset=utf-8"
+
+    duration_ms = round((time.perf_counter() - getattr(g, "request_started_at", time.perf_counter())) * 1000, 2)
+    logger.info(
+        "request_completed",
+        extra={
+            "event": "request_completed",
+            "service": SERVICE_NAME,
+            "version": SERVICE_VERSION,
+            "method": request.method,
+            "path": request.path,
+            "status_code": response.status_code,
+            "client_ip": get_client_ip(),
+            "duration_ms": duration_ms,
+            "user_agent": request.headers.get("User-Agent", "unknown"),
+        },
+    )
+    return response
+
+
+# -----------------------------------------------------------------------------
+# Helpers
+# -----------------------------------------------------------------------------
 
 
 def get_uptime() -> Dict[str, Any]:
@@ -95,17 +182,18 @@ def get_uptime() -> Dict[str, Any]:
     }
 
 
+
 def get_system_info() -> Dict[str, Any]:
     """Collect system information using Python standard library."""
     return {
         "hostname": socket.gethostname(),
         "platform": platform.system(),
-        # platform.platform() gives a more descriptive string than version/release alone
         "platform_version": platform.platform(),
         "architecture": platform.machine(),
         "cpu_count": os.cpu_count() or 0,
         "python_version": platform.python_version(),
     }
+
 
 
 def build_endpoints() -> list[Dict[str, str]]:
@@ -169,6 +257,18 @@ def health():
 
 @app.errorhandler(404)
 def not_found(_error):
+    logger.warning(
+        "endpoint_not_found",
+        extra={
+            "event": "endpoint_not_found",
+            "service": SERVICE_NAME,
+            "version": SERVICE_VERSION,
+            "method": request.method,
+            "path": request.path,
+            "status_code": 404,
+            "client_ip": get_client_ip(),
+        },
+    )
     return (
         jsonify(
             {
@@ -183,7 +283,18 @@ def not_found(_error):
 
 @app.errorhandler(500)
 def internal_error(_error):
-    logger.exception("Unhandled error")
+    logger.exception(
+        "unhandled_error",
+        extra={
+            "event": "unhandled_error",
+            "service": SERVICE_NAME,
+            "version": SERVICE_VERSION,
+            "method": request.method,
+            "path": request.path,
+            "status_code": 500,
+            "client_ip": get_client_ip(),
+        },
+    )
     return (
         jsonify(
             {
@@ -200,11 +311,27 @@ def internal_error(_error):
 # Entrypoint
 # -----------------------------------------------------------------------------
 
+
 def main() -> None:
-    logger.info("Starting %s v%s (%s)", SERVICE_NAME, SERVICE_VERSION, SERVICE_FRAMEWORK)
-    logger.info("Config: HOST=%s PORT=%s DEBUG=%s", HOST, PORT, DEBUG)
-    # NOTE: Flask built-in server is fine for lab/dev.
-    # For production you'd run via a WSGI server (e.g., gunicorn).
+    logger.info(
+        "service_starting",
+        extra={
+            "event": "service_starting",
+            "service": SERVICE_NAME,
+            "version": SERVICE_VERSION,
+        },
+    )
+    logger.info(
+        "runtime_configuration host=%s port=%s debug=%s",
+        HOST,
+        PORT,
+        DEBUG,
+        extra={
+            "event": "runtime_configuration",
+            "service": SERVICE_NAME,
+            "version": SERVICE_VERSION,
+        },
+    )
     app.run(host=HOST, port=PORT, debug=DEBUG)
 
 
