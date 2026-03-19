@@ -517,3 +517,6 @@ After you run the stack locally, verify the following:
 - the Lab08 dashboard shows live data in all panels
 - `docker compose ps` shows healthy containers
 - dashboards survive `docker compose down` / `docker compose up -d`
+
+All these checklist you can see as a screenshots in:
+- all `lab08*.png` files in `monitoring/docs/screenshots`
