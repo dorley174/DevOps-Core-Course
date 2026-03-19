@@ -1,0 +1,45 @@
+{
+    "endpoints": [
+        {
+            "description": "Service information",
+            "method": "GET",
+            "path": "/"
+        },
+        {
+            "description": "Health check",
+            "method": "GET",
+            "path": "/health"
+        },
+        {
+            "description": "Prometheus metrics",
+            "method": "GET",
+            "path": "/metrics"
+        }
+    ],
+    "request": {
+        "client_ip": "127.0.0.1",
+        "method": "GET",
+        "path": "/",
+        "user_agent": "curl/8.10.1"
+    },
+    "runtime": {
+        "current_time": "2026-03-19T13:05:22.568Z",
+        "timezone": "UTC",
+        "uptime_human": "0 hours, 0 minutes",
+        "uptime_seconds": 8
+    },
+    "service": {
+        "description": "DevOps course info service",
+        "framework": "Flask",
+        "name": "devops-info-service",
+        "version": "1.1.0"
+    },
+    "system": {
+        "architecture": "x86_64",
+        "cpu_count": 56,
+        "hostname": "17ceccfebd47",
+        "platform": "Linux",
+        "platform_version": "Linux-4.4.0-x86_64-with-glibc2.41",
+        "python_version": "3.13.5"
+    }
+}

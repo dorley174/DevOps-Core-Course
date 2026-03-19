@@ -14,6 +14,7 @@ Vagrant.configure("2") do |config|
   config.vm.network "forwarded_port", guest: 3000, host: 3000, host_ip: "0.0.0.0", id: "grafana", auto_correct: true
   config.vm.network "forwarded_port", guest: 3100, host: 3100, host_ip: "0.0.0.0", id: "loki", auto_correct: true
   config.vm.network "forwarded_port", guest: 9080, host: 9080, host_ip: "0.0.0.0", id: "promtail", auto_correct: true
+  config.vm.network "forwarded_port", guest: 9090, host: 9090, host_ip: "0.0.0.0", id: "prometheus", auto_correct: true
 
   config.ssh.insert_key = true
 
