@@ -5,6 +5,7 @@ Main application module (Flask)
 Endpoints:
 - GET /        : service + system + runtime + request info
 - GET /health  : health check (for probes/monitoring)
+- GET /metrics : Prometheus metrics endpoint
 """
 
 from __future__ import annotations
@@ -19,7 +20,8 @@ import time
 from datetime import datetime, timezone
 from typing import Any, Dict
 
-from flask import Flask, g, jsonify, request
+from flask import Flask, Response, g, jsonify, request
+from prometheus_client import CONTENT_TYPE_LATEST, Counter, Gauge, Histogram, generate_latest
 
 # -----------------------------------------------------------------------------
 # App & Config
@@ -37,6 +39,44 @@ SERVICE_DESCRIPTION = "DevOps course info service"
 SERVICE_FRAMEWORK = "Flask"
 
 START_TIME_UTC = datetime.now(timezone.utc)
+
+
+# -----------------------------------------------------------------------------
+# Prometheus metrics
+# -----------------------------------------------------------------------------
+
+HTTP_REQUESTS_TOTAL = Counter(
+    "http_requests_total",
+    "Total HTTP requests processed by the service.",
+    ["method", "endpoint", "status_code"],
+)
+
+HTTP_REQUEST_DURATION_SECONDS = Histogram(
+    "http_request_duration_seconds",
+    "HTTP request duration in seconds.",
+    ["method", "endpoint"],
+)
+
+HTTP_REQUESTS_IN_PROGRESS = Gauge(
+    "http_requests_in_progress",
+    "HTTP requests currently being processed.",
+)
+
+DEVOPS_INFO_ENDPOINT_CALLS_TOTAL = Counter(
+    "devops_info_endpoint_calls_total",
+    "Total endpoint calls for the DevOps info service.",
+    ["endpoint"],
+)
+
+DEVOPS_INFO_SYSTEM_COLLECTION_SECONDS = Histogram(
+    "devops_info_system_collection_seconds",
+    "Time spent collecting system information.",
+)
+
+DEVOPS_INFO_UPTIME_SECONDS = Gauge(
+    "devops_info_uptime_seconds",
+    "Current service uptime in seconds.",
+)
 
 
 # -----------------------------------------------------------------------------
@@ -122,9 +162,31 @@ def get_client_ip() -> str:
     return request.remote_addr or "unknown"
 
 
+def normalize_endpoint() -> str:
+    """
+    Keep endpoint labels low-cardinality for Prometheus.
+    Uses the Flask route template when available and groups unknown paths.
+    """
+    if request.url_rule and request.url_rule.rule:
+        return request.url_rule.rule
+
+    if request.path == "/":
+        return "/"
+
+    return "unmatched"
+
+
 @app.before_request
 def log_request_started() -> None:
     g.request_started_at = time.perf_counter()
+    g.normalized_endpoint = normalize_endpoint()
+    g.skip_http_metrics = request.path == "/metrics"
+    g.active_request_metric_registered = False
+
+    if not g.skip_http_metrics:
+        HTTP_REQUESTS_IN_PROGRESS.inc()
+        g.active_request_metric_registered = True
+
     logger.debug(
         "request_started",
         extra={
@@ -139,11 +201,36 @@ def log_request_started() -> None:
     )
 
 
+@app.teardown_request
+def track_request_finished(_error: Exception | None) -> None:
+    if getattr(g, "active_request_metric_registered", False):
+        HTTP_REQUESTS_IN_PROGRESS.dec()
+        g.active_request_metric_registered = False
+
+
 @app.after_request
 def add_headers(response):
-    response.headers["Content-Type"] = "application/json; charset=utf-8"
+    endpoint = getattr(g, "normalized_endpoint", normalize_endpoint())
+    duration_seconds = time.perf_counter() - getattr(g, "request_started_at", time.perf_counter())
+    duration_ms = round(duration_seconds * 1000, 2)
 
-    duration_ms = round((time.perf_counter() - getattr(g, "request_started_at", time.perf_counter())) * 1000, 2)
+    if not getattr(g, "skip_http_metrics", False):
+        HTTP_REQUESTS_TOTAL.labels(
+            method=request.method,
+            endpoint=endpoint,
+            status_code=str(response.status_code),
+        ).inc()
+        HTTP_REQUEST_DURATION_SECONDS.labels(
+            method=request.method,
+            endpoint=endpoint,
+        ).observe(duration_seconds)
+        DEVOPS_INFO_ENDPOINT_CALLS_TOTAL.labels(endpoint=endpoint).inc()
+
+    DEVOPS_INFO_UPTIME_SECONDS.set(get_uptime()["seconds"])
+
+    if response.mimetype == "application/json":
+        response.headers["Content-Type"] = "application/json; charset=utf-8"
+
     logger.info(
         "request_completed",
         extra={
@@ -185,14 +272,18 @@ def get_uptime() -> Dict[str, Any]:
 
 def get_system_info() -> Dict[str, Any]:
     """Collect system information using Python standard library."""
-    return {
-        "hostname": socket.gethostname(),
-        "platform": platform.system(),
-        "platform_version": platform.platform(),
-        "architecture": platform.machine(),
-        "cpu_count": os.cpu_count() or 0,
-        "python_version": platform.python_version(),
-    }
+    started_at = time.perf_counter()
+    try:
+        return {
+            "hostname": socket.gethostname(),
+            "platform": platform.system(),
+            "platform_version": platform.platform(),
+            "architecture": platform.machine(),
+            "cpu_count": os.cpu_count() or 0,
+            "python_version": platform.python_version(),
+        }
+    finally:
+        DEVOPS_INFO_SYSTEM_COLLECTION_SECONDS.observe(time.perf_counter() - started_at)
 
 
 
@@ -200,6 +291,7 @@ def build_endpoints() -> list[Dict[str, str]]:
     return [
         {"path": "/", "method": "GET", "description": "Service information"},
         {"path": "/health", "method": "GET", "description": "Health check"},
+        {"path": "/metrics", "method": "GET", "description": "Prometheus metrics"},
     ]
 
 
@@ -249,6 +341,13 @@ def health():
             "uptime_seconds": uptime["seconds"],
         }
     ), 200
+
+
+@app.get("/metrics")
+def metrics() -> Response:
+    """Expose Prometheus metrics for scraping."""
+    DEVOPS_INFO_UPTIME_SECONDS.set(get_uptime()["seconds"])
+    return Response(generate_latest(), content_type=CONTENT_TYPE_LATEST)
 
 
 # -----------------------------------------------------------------------------
