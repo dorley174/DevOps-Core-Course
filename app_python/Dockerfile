@@ -10,8 +10,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 # Create a dedicated non-root user (mandatory best practice).
-RUN addgroup --system app \
-    && adduser --system --ingroup app --no-create-home app
+RUN addgroup --system --gid 10001 app \
+    && adduser --system --uid 10001 --ingroup app --no-create-home app
 
 # Install dependencies first to leverage Docker layer caching.
 COPY requirements.txt ./
@@ -21,7 +21,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app.py ./
 
 # Drop privileges
-USER app
+USER 10001:10001
 
 # Document the port (Flask defaults to 5000 in this repo)
 EXPOSE 5000
