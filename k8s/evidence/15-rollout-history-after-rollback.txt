@@ -1,6 +1,5 @@
-deployment.apps/devops-info-service 
+deployment.apps/devops-info-service
 REVISION  CHANGE-CAUSE
 1         <none>
 5         <none>
 6         <none>
-

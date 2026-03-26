@@ -5,7 +5,7 @@ Vagrant.configure("2") do |config|
   # Disable project folder sharing inside the VM.
   # This avoids common Windows path issues (spaces, Cyrillic characters)
   # and is not needed for this lab workflow.
-  config.vm.synced_folder ".", "/vagrant"
+  config.vm.synced_folder ".", "/vagrant", disabled: true
 
   # Forward ports to the Windows host.
   # host_ip "0.0.0.0" lets WSL2 reach the forwarded ports through the host.

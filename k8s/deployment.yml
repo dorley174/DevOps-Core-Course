@@ -44,9 +44,9 @@ spec:
             - name: APP_VARIANT
               value: "app1"
             - name: APP_MESSAGE
-              value: "Lab 09 rolling update"
+              value: "Lab 09 primary deployment"
             - name: SERVICE_VERSION
-              value: "lab09-v2"
+              value: "lab09-v1"
           resources:
             requests:
               cpu: "100m"
