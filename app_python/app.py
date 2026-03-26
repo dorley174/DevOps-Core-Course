@@ -33,10 +33,12 @@ HOST: str = os.getenv("HOST", "0.0.0.0")
 PORT: int = int(os.getenv("PORT", "5000"))
 DEBUG: bool = os.getenv("DEBUG", "False").strip().lower() == "true"
 
-SERVICE_NAME = "devops-info-service"
-SERVICE_VERSION = "1.1.0"
-SERVICE_DESCRIPTION = "DevOps course info service"
+SERVICE_NAME = os.getenv("SERVICE_NAME", "devops-info-service")
+SERVICE_VERSION = os.getenv("SERVICE_VERSION", "1.1.0")
+SERVICE_DESCRIPTION = os.getenv("SERVICE_DESCRIPTION", "DevOps course info service")
 SERVICE_FRAMEWORK = "Flask"
+APP_VARIANT = os.getenv("APP_VARIANT", "primary")
+APP_MESSAGE = os.getenv("APP_MESSAGE", "running")
 
 START_TIME_UTC = datetime.now(timezone.utc)
 
@@ -290,7 +292,8 @@ def get_system_info() -> Dict[str, Any]:
 def build_endpoints() -> list[Dict[str, str]]:
     return [
         {"path": "/", "method": "GET", "description": "Service information"},
-        {"path": "/health", "method": "GET", "description": "Health check"},
+        {"path": "/health", "method": "GET", "description": "Liveness health check"},
+        {"path": "/ready", "method": "GET", "description": "Readiness health check"},
         {"path": "/metrics", "method": "GET", "description": "Prometheus metrics"},
     ]
 
@@ -310,6 +313,8 @@ def index():
             "version": SERVICE_VERSION,
             "description": SERVICE_DESCRIPTION,
             "framework": SERVICE_FRAMEWORK,
+            "variant": APP_VARIANT,
+            "message": APP_MESSAGE,
         },
         "system": get_system_info(),
         "runtime": {
@@ -339,6 +344,22 @@ def health():
             "status": "healthy",
             "timestamp": iso_utc_now_z(),
             "uptime_seconds": uptime["seconds"],
+            "variant": APP_VARIANT,
+        }
+    ), 200
+
+
+@app.get("/ready")
+def ready():
+    """Readiness endpoint used by Kubernetes readiness probes."""
+    uptime = get_uptime()
+    return jsonify(
+        {
+            "status": "ready",
+            "timestamp": iso_utc_now_z(),
+            "uptime_seconds": uptime["seconds"],
+            "variant": APP_VARIANT,
+            "message": APP_MESSAGE,
         }
     ), 200
 

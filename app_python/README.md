@@ -8,7 +8,8 @@ It reports service metadata, runtime details, and basic system information.
 
 The service exposes two endpoints:
 - `GET /` — service + system + runtime + request information
-- `GET /health` — health check endpoint (used later for Kubernetes probes)
+- `GET /health` — liveness health endpoint
+- `GET /ready` — readiness health endpoint for Kubernetes
 
 ## Prerequisites
 - Python **3.11+**
@@ -68,11 +69,19 @@ curl http://127.0.0.1:5000/
 ```
 
 ### `GET /health`
-Returns a minimal health response for monitoring.
+Returns a minimal liveness response for monitoring and Kubernetes liveness probes.
 
 Example (includes HTTP status):
 ```bash
 curl -i http://127.0.0.1:5000/health
+```
+
+### `GET /ready`
+Returns readiness information for Kubernetes readiness probes.
+
+Example:
+```bash
+curl -i http://127.0.0.1:5000/ready
 ```
 
 ## Testing / Pretty Output

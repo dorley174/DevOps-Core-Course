@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: devops-info-service-app2
+  namespace: devops-lab09
+  labels:
+    app.kubernetes.io/name: devops-info-service-app2
+    app.kubernetes.io/component: web
+spec:
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: devops-info-service-app2
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
+      nodePort: 30081

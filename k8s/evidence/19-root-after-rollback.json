@@ -1,0 +1,52 @@
+{
+    "endpoints": [
+        {
+            "description": "Service information",
+            "method": "GET",
+            "path": "/"
+        },
+        {
+            "description": "Liveness health check",
+            "method": "GET",
+            "path": "/health"
+        },
+        {
+            "description": "Readiness health check",
+            "method": "GET",
+            "path": "/ready"
+        },
+        {
+            "description": "Prometheus metrics",
+            "method": "GET",
+            "path": "/metrics"
+        }
+    ],
+    "request": {
+        "client_ip": "127.0.0.1",
+        "method": "GET",
+        "path": "/",
+        "user_agent": "curl/8.5.0"
+    },
+    "runtime": {
+        "current_time": "2026-03-26T19:57:23.089Z",
+        "timezone": "UTC",
+        "uptime_human": "0 hours, 1 minute",
+        "uptime_seconds": 61
+    },
+    "service": {
+        "description": "DevOps course info service",
+        "framework": "Flask",
+        "message": "Lab 09 primary deployment",
+        "name": "devops-info-service",
+        "variant": "app1",
+        "version": "lab09-v1"
+    },
+    "system": {
+        "architecture": "x86_64",
+        "cpu_count": 20,
+        "hostname": "devops-info-service-7b48589b6b-2b97b",
+        "platform": "Linux",
+        "platform_version": "Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.36",
+        "python_version": "3.13.1"
+    }
+}
