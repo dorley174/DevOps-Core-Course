@@ -1,0 +1,4 @@
+NAME                                   READY   STATUS    RESTARTS   AGE     IP            NODE       NOMINATED NODE   READINESS GATES
+devops-info-service-7b48589b6b-2b97b   1/1     Running   0          8m24s   10.244.0.14   minikube   <none>           <none>
+devops-info-service-7b48589b6b-7fttq   1/1     Running   0          8m17s   10.244.0.15   minikube   <none>           <none>
+devops-info-service-7b48589b6b-zhkpz   1/1     Running   0          8m10s   10.244.0.16   minikube   <none>           <none>

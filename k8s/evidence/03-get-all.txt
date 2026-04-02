@@ -1,0 +1,14 @@
+NAME                                       READY   STATUS    RESTARTS   AGE     IP           NODE       NOMINATED NODE   READINESS GATES
+pod/devops-info-service-7b48589b6b-2cf77   1/1     Running   0          5m26s   10.244.0.6   minikube   <none>           <none>
+pod/devops-info-service-7b48589b6b-52j4f   1/1     Running   0          5m9s    10.244.0.8   minikube   <none>           <none>
+pod/devops-info-service-7b48589b6b-wrvvj   1/1     Running   0          5m19s   10.244.0.7   minikube   <none>           <none>
+
+NAME                          TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE   SELECTOR
+service/devops-info-service   NodePort   10.100.203.165   <none>        80:30080/TCP   13m   app.kubernetes.io/name=devops-info-service
+
+NAME                                  READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS            IMAGES                                 SELECTOR
+deployment.apps/devops-info-service   3/3     3            3           13m   devops-info-service   dorley174/devops-info-service:latest   app.kubernetes.io/name=devops-info-service
+
+NAME                                             DESIRED   CURRENT   READY   AGE     CONTAINERS            IMAGES                                 SELECTOR
+replicaset.apps/devops-info-service-7b48589b6b   3         3         3       5m26s   devops-info-service   dorley174/devops-info-service:latest   app.kubernetes.io/name=devops-info-service,pod-template-hash=7b48589b6b
+replicaset.apps/devops-info-service-8689cb4bbc   0         0         0       13m     devops-info-service   dorley174/devops-info-service:latest   app.kubernetes.io/name=devops-info-service,pod-template-hash=8689cb4bbc

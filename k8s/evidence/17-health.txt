@@ -1,0 +1,1 @@
+{"status":"healthy","timestamp":"2026-03-26T19:47:24.216Z","uptime_seconds":264,"variant":"app1"}

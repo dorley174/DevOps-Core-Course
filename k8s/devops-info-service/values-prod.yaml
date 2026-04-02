@@ -1,0 +1,27 @@
+replicaCount: 3
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 5000
+  nodePort: null
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+env:
+  appMessage: "Lab 10 Helm production deployment"
+  serviceVersion: "lab10-prod"
+
+readinessProbe:
+  initialDelaySeconds: 10
+  periodSeconds: 3
+
+livenessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 5

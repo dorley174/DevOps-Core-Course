@@ -1,0 +1,57 @@
+Name:                   devops-info-service
+Namespace:              devops-lab09
+CreationTimestamp:      Thu, 26 Mar 2026 22:35:19 +0300
+Labels:                 app.kubernetes.io/component=web
+                        app.kubernetes.io/name=devops-info-service
+                        app.kubernetes.io/part-of=devops-core-course
+Annotations:            deployment.kubernetes.io/revision: 2
+Selector:               app.kubernetes.io/name=devops-info-service
+Replicas:               3 desired | 3 updated | 3 total | 3 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  0 max unavailable, 1 max surge
+Pod Template:
+  Labels:       app.kubernetes.io/component=web
+                app.kubernetes.io/name=devops-info-service
+                app.kubernetes.io/part-of=devops-core-course
+  Annotations:  kubectl.kubernetes.io/restartedAt: 2026-03-26T22:42:54+03:00
+  Containers:
+   devops-info-service:
+    Image:      dorley174/devops-info-service:latest
+    Port:       5000/TCP (http)
+    Host Port:  0/TCP (http)
+    Limits:
+      cpu:     250m
+      memory:  256Mi
+    Requests:
+      cpu:      100m
+      memory:   128Mi
+    Liveness:   http-get http://:http/health delay=15s timeout=2s period=10s #success=1 #failure=3
+    Readiness:  http-get http://:http/ready delay=5s timeout=2s period=5s #success=1 #failure=3
+    Environment:
+      PORT:             5000
+      DEBUG:            False
+      APP_VARIANT:      app1
+      APP_MESSAGE:      Lab 09 primary deployment
+      SERVICE_VERSION:  lab09-v1
+    Mounts:             <none>
+  Volumes:              <none>
+  Node-Selectors:       <none>
+  Tolerations:          <none>
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Available      True    MinimumReplicasAvailable
+  Progressing    True    NewReplicaSetAvailable
+OldReplicaSets:  devops-info-service-8689cb4bbc (0/0 replicas created)
+NewReplicaSet:   devops-info-service-7b48589b6b (3/3 replicas created)
+Events:
+  Type    Reason             Age    From                   Message
+  ----    ------             ----   ----                   -------
+  Normal  ScalingReplicaSet  13m    deployment-controller  Scaled up replica set devops-info-service-8689cb4bbc from 0 to 3
+  Normal  ScalingReplicaSet  5m27s  deployment-controller  Scaled up replica set devops-info-service-7b48589b6b from 0 to 1
+  Normal  ScalingReplicaSet  5m20s  deployment-controller  Scaled down replica set devops-info-service-8689cb4bbc from 3 to 2
+  Normal  ScalingReplicaSet  5m20s  deployment-controller  Scaled up replica set devops-info-service-7b48589b6b from 1 to 2
+  Normal  ScalingReplicaSet  5m10s  deployment-controller  Scaled down replica set devops-info-service-8689cb4bbc from 2 to 1
+  Normal  ScalingReplicaSet  5m10s  deployment-controller  Scaled up replica set devops-info-service-7b48589b6b from 2 to 3
+  Normal  ScalingReplicaSet  5m2s   deployment-controller  Scaled down replica set devops-info-service-8689cb4bbc from 1 to 0
