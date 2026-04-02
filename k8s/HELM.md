@@ -1307,19 +1307,19 @@ curl http://127.0.0.1:8081/ready
 **Evidence — second chart install:**
 
 ```text
-TO_FILL_BONUS_HELM_INSTALL
+didn't complete
 ```
 
 **Evidence — both releases present:**
 
 ```text
-TO_FILL_BONUS_HELM_LIST
+didn't complete
 ```
 
 **Evidence — second app accessibility:**
 
 ```text
-TO_FILL_BONUS_APP_CHECK
+didn't complete
 ```
 
 ### 8.5 Benefits of the library approach
