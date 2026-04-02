@@ -1,0 +1,4 @@
+        - name: APP_MESSAGE
+          value: Lab 09 rolling update
+        - name: SERVICE_VERSION
+          value: lab09-v2
