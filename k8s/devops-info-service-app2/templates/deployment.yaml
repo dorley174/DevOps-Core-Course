@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "devops-info-service-app2.fullname" . }}
+  labels:
+    {{- include "devops-info-service-app2.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ .Values.strategy.maxSurge }}
+      maxUnavailable: {{ .Values.strategy.maxUnavailable }}
+  selector:
+    matchLabels:
+      {{- include "devops-info-service-app2.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "devops-info-service-app2.labels" . | nindent 8 }}
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ required "image.repository is required" .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.containerPort }}
+              protocol: TCP
+          env:
+            - name: PORT
+              value: {{ .Values.env.port | quote }}
+            - name: DEBUG
+              value: {{ .Values.env.debug | quote }}
+            - name: APP_VARIANT
+              value: {{ .Values.env.appVariant | quote }}
+            - name: APP_MESSAGE
+              value: {{ .Values.env.appMessage | quote }}
+            - name: SERVICE_VERSION
+              value: {{ .Values.env.serviceVersion | quote }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.readinessProbe.path }}
+              port: {{ .Values.readinessProbe.port }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.livenessProbe.path }}
+              port: {{ .Values.livenessProbe.port }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
