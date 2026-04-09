@@ -12,6 +12,7 @@
         - "{{ monitoring_project_dir }}"
         - "{{ monitoring_project_dir }}/loki"
         - "{{ monitoring_project_dir }}/promtail"
+        - "{{ monitoring_project_dir }}/prometheus"
         - "{{ monitoring_project_dir }}/grafana"
         - "{{ monitoring_project_dir }}/grafana/provisioning"
         - "{{ monitoring_project_dir }}/grafana/provisioning/datasources"
@@ -36,7 +37,7 @@
         group: root
         mode: "0600"
 
-    - name: Template monitoring stack files
+    - name: Template monitoring stack configuration files
       ansible.builtin.template:
         src: "{{ item.src }}"
         dest: "{{ monitoring_project_dir }}/{{ item.dest }}"
@@ -47,9 +48,18 @@
         - { src: 'docker-compose.yml.j2', dest: 'docker-compose.yml' }
         - { src: 'loki-config.yml.j2', dest: 'loki/config.yml' }
         - { src: 'promtail-config.yml.j2', dest: 'promtail/config.yml' }
+        - { src: 'prometheus-config.yml.j2', dest: 'prometheus/prometheus.yml' }
         - { src: 'grafana-datasource.yml.j2', dest: 'grafana/provisioning/datasources/loki.yml' }
         - { src: 'grafana-dashboard-provider.yml.j2', dest: 'grafana/provisioning/dashboards/dashboard-provider.yml' }
         - { src: 'grafana-dashboard.json.j2', dest: 'grafana/dashboards/lab07-logging.json' }
+
+    - name: Copy Lab08 Grafana metrics dashboard
+      ansible.builtin.copy:
+        src: lab08-metrics.json
+        dest: "{{ monitoring_project_dir }}/grafana/dashboards/lab08-metrics.json"
+        owner: root
+        group: root
+        mode: "0644"
 
     - name: Deploy monitoring stack with Docker Compose v2
       community.docker.docker_compose_v2:
@@ -69,6 +79,16 @@
       retries: 20
       delay: 3
       until: loki_ready.status == 200
+
+    - name: Wait for Prometheus to become healthy
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ monitoring_prometheus_port }}/-/healthy"
+        method: GET
+        status_code: 200
+      register: prometheus_ready
+      retries: 20
+      delay: 3
+      until: prometheus_ready.status == 200
 
     - name: Wait for Grafana API health endpoint
       ansible.builtin.uri:
@@ -93,14 +113,32 @@
       delay: 3
       until: monitoring_app_health.status == 200
 
-    - name: Verify Loki data source was provisioned
+    - name: Wait for monitored application metrics endpoint
       ansible.builtin.uri:
-        url: "http://127.0.0.1:{{ monitoring_grafana_port }}/api/datasources/uid/{{ monitoring_grafana_datasource_uid }}"
+        url: "http://127.0.0.1:{{ monitoring_app_port }}/metrics"
+        method: GET
+        status_code: 200
+        return_content: true
+      register: monitoring_app_metrics
+      retries: 20
+      delay: 3
+      until:
+        - monitoring_app_metrics.status == 200
+        - "'http_requests_total' in monitoring_app_metrics.content"
+
+    - name: Verify provisioned Grafana data sources
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ monitoring_grafana_port }}/api/datasources/uid/{{ item.uid }}"
         method: GET
         user: "{{ monitoring_grafana_admin_user }}"
         password: "{{ monitoring_grafana_admin_password }}"
         force_basic_auth: true
         status_code: 200
+      loop:
+        - { name: '{{ monitoring_loki_datasource_name }}', uid: '{{ monitoring_loki_datasource_uid }}' }
+        - { name: '{{ monitoring_prometheus_datasource_name }}', uid: '{{ monitoring_prometheus_datasource_uid }}' }
+      loop_control:
+        label: "{{ item.name }}"
 
   rescue:
     - name: Monitoring deployment failure hint

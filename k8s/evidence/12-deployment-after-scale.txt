@@ -1,0 +1,2 @@
+NAME                  READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS            IMAGES                                 SELECTOR
+devops-info-service   5/5     5            5           29m   devops-info-service   dorley174/devops-info-service:latest   app.kubernetes.io/name=devops-info-service

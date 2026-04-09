@@ -1,0 +1,33 @@
+{{- if .Values.hooks.preInstall.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "devops-info-service-app2.fullname" . }}-pre-install
+  labels:
+    {{- include "devops-info-service-app2.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "{{ .Values.hooks.preInstall.weight }}"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        {{- include "devops-info-service-app2.labels" . | nindent 8 }}
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: pre-install-validation
+          image: {{ include "devops-info-service-app2.hookImage" . }}
+          imagePullPolicy: {{ .Values.hooks.image.pullPolicy }}
+          command:
+            - sh
+            - -c
+            - >-
+              echo "[pre-install] validating chart values for {{ include "devops-info-service-app2.fullname" . }}" &&
+              test -n "{{ .Values.image.repository }}" &&
+              echo "[pre-install] image repository is set" &&
+              sleep {{ .Values.hooks.preInstall.sleepSeconds }} &&
+              echo "[pre-install] validation completed"
+{{- end }}

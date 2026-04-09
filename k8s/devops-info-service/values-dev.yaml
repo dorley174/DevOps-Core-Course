@@ -1,0 +1,27 @@
+replicaCount: 1
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 5000
+  nodePort: 30080
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi
+
+env:
+  appMessage: "Lab 11 Helm development deployment"
+  serviceVersion: "lab11-dev"
+
+readinessProbe:
+  initialDelaySeconds: 3
+  periodSeconds: 5
+
+livenessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 10

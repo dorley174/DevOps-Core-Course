@@ -1,0 +1,38 @@
+LAST SEEN   TYPE      REASON              OBJECT                                      MESSAGE
+13m         Normal    SuccessfulCreate    replicaset/devops-info-service-8689cb4bbc   Created pod: devops-info-service-8689cb4bbc-49c68
+13m         Normal    Scheduled           pod/devops-info-service-8689cb4bbc-gbntr    Successfully assigned devops-lab09/devops-info-service-8689cb4bbc-gbntr to minikube
+13m         Normal    ScalingReplicaSet   deployment/devops-info-service              Scaled up replica set devops-info-service-8689cb4bbc from 0 to 3
+13m         Normal    Scheduled           pod/devops-info-service-8689cb4bbc-49c68    Successfully assigned devops-lab09/devops-info-service-8689cb4bbc-49c68 to minikube
+13m         Normal    SuccessfulCreate    replicaset/devops-info-service-8689cb4bbc   Created pod: devops-info-service-8689cb4bbc-gbntr
+13m         Normal    SuccessfulCreate    replicaset/devops-info-service-8689cb4bbc   Created pod: devops-info-service-8689cb4bbc-tmcsb
+13m         Normal    Scheduled           pod/devops-info-service-8689cb4bbc-tmcsb    Successfully assigned devops-lab09/devops-info-service-8689cb4bbc-tmcsb to minikube
+7m19s       Warning   Failed              pod/devops-info-service-8689cb4bbc-49c68    Error: container has runAsNonRoot and image has non-numeric user (app), cannot verify user is non-root (pod: "devops-info-service-8689cb4bbc-49c68_devops-lab09(73e9a23a-7db6-421c-b843-970354f1e086)", container: devops-info-service)
+7m19s       Normal    Pulled              pod/devops-info-service-8689cb4bbc-49c68    Container image "dorley174/devops-info-service:latest" already present on machine and can be accessed by the pod
+7m21s       Normal    Pulled              pod/devops-info-service-8689cb4bbc-gbntr    Container image "dorley174/devops-info-service:latest" already present on machine and can be accessed by the pod
+7m18s       Warning   Failed              pod/devops-info-service-8689cb4bbc-tmcsb    Error: container has runAsNonRoot and image has non-numeric user (app), cannot verify user is non-root (pod: "devops-info-service-8689cb4bbc-tmcsb_devops-lab09(67a638c8-08d0-4a24-a638-9a1e6b758032)", container: devops-info-service)
+7m18s       Normal    Pulled              pod/devops-info-service-8689cb4bbc-tmcsb    Container image "dorley174/devops-info-service:latest" already present on machine and can be accessed by the pod
+7m21s       Warning   Failed              pod/devops-info-service-8689cb4bbc-gbntr    Error: container has runAsNonRoot and image has non-numeric user (app), cannot verify user is non-root (pod: "devops-info-service-8689cb4bbc-gbntr_devops-lab09(6221b7e7-e23d-42bd-9957-c4efe897415f)", container: devops-info-service)
+5m29s       Normal    ScalingReplicaSet   deployment/devops-info-service              Scaled up replica set devops-info-service-7b48589b6b from 0 to 1
+5m29s       Normal    SuccessfulCreate    replicaset/devops-info-service-7b48589b6b   Created pod: devops-info-service-7b48589b6b-2cf77
+5m29s       Normal    Scheduled           pod/devops-info-service-7b48589b6b-2cf77    Successfully assigned devops-lab09/devops-info-service-7b48589b6b-2cf77 to minikube
+5m28s       Normal    Started             pod/devops-info-service-7b48589b6b-2cf77    Container started
+5m28s       Normal    Created             pod/devops-info-service-7b48589b6b-2cf77    Container created
+5m28s       Normal    Pulled              pod/devops-info-service-7b48589b6b-2cf77    Container image "dorley174/devops-info-service:latest" already present on machine and can be accessed by the pod
+5m22s       Normal    SuccessfulDelete    replicaset/devops-info-service-8689cb4bbc   Deleted pod: devops-info-service-8689cb4bbc-49c68
+5m22s       Normal    Scheduled           pod/devops-info-service-7b48589b6b-wrvvj    Successfully assigned devops-lab09/devops-info-service-7b48589b6b-wrvvj to minikube
+5m22s       Normal    SuccessfulCreate    replicaset/devops-info-service-7b48589b6b   Created pod: devops-info-service-7b48589b6b-wrvvj
+5m22s       Normal    ScalingReplicaSet   deployment/devops-info-service              Scaled up replica set devops-info-service-7b48589b6b from 1 to 2
+5m22s       Normal    ScalingReplicaSet   deployment/devops-info-service              Scaled down replica set devops-info-service-8689cb4bbc from 3 to 2
+5m21s       Normal    Pulled              pod/devops-info-service-7b48589b6b-wrvvj    Container image "dorley174/devops-info-service:latest" already present on machine and can be accessed by the pod
+5m21s       Normal    Created             pod/devops-info-service-7b48589b6b-wrvvj    Container created
+5m21s       Normal    Started             pod/devops-info-service-7b48589b6b-wrvvj    Container started
+5m12s       Normal    SuccessfulCreate    replicaset/devops-info-service-7b48589b6b   Created pod: devops-info-service-7b48589b6b-52j4f
+5m12s       Normal    SuccessfulDelete    replicaset/devops-info-service-8689cb4bbc   Deleted pod: devops-info-service-8689cb4bbc-gbntr
+5m12s       Normal    Scheduled           pod/devops-info-service-7b48589b6b-52j4f    Successfully assigned devops-lab09/devops-info-service-7b48589b6b-52j4f to minikube
+5m12s       Normal    ScalingReplicaSet   deployment/devops-info-service              Scaled down replica set devops-info-service-8689cb4bbc from 2 to 1
+5m12s       Normal    ScalingReplicaSet   deployment/devops-info-service              Scaled up replica set devops-info-service-7b48589b6b from 2 to 3
+5m11s       Normal    Started             pod/devops-info-service-7b48589b6b-52j4f    Container started
+5m11s       Normal    Created             pod/devops-info-service-7b48589b6b-52j4f    Container created
+5m11s       Normal    Pulled              pod/devops-info-service-7b48589b6b-52j4f    Container image "dorley174/devops-info-service:latest" already present on machine and can be accessed by the pod
+5m4s        Normal    SuccessfulDelete    replicaset/devops-info-service-8689cb4bbc   Deleted pod: devops-info-service-8689cb4bbc-tmcsb
+5m4s        Normal    ScalingReplicaSet   deployment/devops-info-service              Scaled down replica set devops-info-service-8689cb4bbc from 1 to 0

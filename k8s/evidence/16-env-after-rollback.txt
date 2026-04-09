@@ -1,0 +1,4 @@
+        - name: APP_MESSAGE
+          value: Lab 09 primary deployment
+        - name: SERVICE_VERSION
+          value: lab09-v1
