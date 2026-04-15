@@ -3,6 +3,7 @@ fullnameOverride: ""
 component: web
 partOf: devops-core-course
 commonLabels: {}
+podAnnotations: {}
 
 replicaCount: 3
 revisionHistoryLimit: 10
@@ -24,6 +25,11 @@ service:
   targetPort: 5000
   nodePort: 30080
 
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
 resources:
   requests:
     cpu: 100m
@@ -36,8 +42,28 @@ env:
   port: "5000"
   debug: "False"
   appVariant: app1
-  appMessage: "Lab 10 Helm deployment"
-  serviceVersion: "lab10-v1"
+  appMessage: "Lab 11 secret-managed deployment"
+  serviceVersion: "lab11-v1"
+
+secrets:
+  enabled: true
+  name: ""
+  existingSecret: ""
+  type: Opaque
+  data:
+    username: "change-me-username"
+    password: "change-me-password"
+
+vault:
+  enabled: false
+  role: "devops-info-service-role"
+  authPath: "auth/kubernetes"
+  service: ""
+  secrets:
+    appConfig:
+      path: "secret/data/devops-info-service/config"
+      mountPath: "/vault/secrets"
+      fileName: "app-config.txt"
 
 readinessProbe:
   path: /ready

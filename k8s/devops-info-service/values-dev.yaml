@@ -15,8 +15,8 @@ resources:
     memory: 128Mi
 
 env:
-  appMessage: "Lab 10 Helm development deployment"
-  serviceVersion: "lab10-dev"
+  appMessage: "Lab 11 Helm development deployment"
+  serviceVersion: "lab11-dev"
 
 readinessProbe:
   initialDelaySeconds: 3

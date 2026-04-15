@@ -1,10 +1,18 @@
 1. Get the release status:
    helm status {{ .Release.Name }} -n {{ .Release.Namespace }}
 
-2. Inspect the rendered Service:
-   kubectl get svc {{ include "devops-info-service.fullname" . }} -n {{ .Release.Namespace }}
+2. Inspect the generated Secret and ServiceAccount:
+   kubectl get secret {{ include "devops-info-service.secretName" . }} -n {{ .Release.Namespace }} -o yaml
+   kubectl get serviceaccount {{ include "devops-info-service.serviceAccountName" . }} -n {{ .Release.Namespace }}
 
-3. For local verification through port-forward:
+3. Verify Secret-backed environment variables inside the application pod:
+   kubectl exec deploy/{{ include "devops-info-service.fullname" . }} -n {{ .Release.Namespace }} -c {{ .Chart.Name }} -- printenv | grep '^APP_'
+
+4. If Vault injection is enabled, verify the rendered secret file:
+   kubectl exec deploy/{{ include "devops-info-service.fullname" . }} -n {{ .Release.Namespace }} -c {{ .Chart.Name }} -- ls -la {{ .Values.vault.secrets.appConfig.mountPath }}
+   kubectl exec deploy/{{ include "devops-info-service.fullname" . }} -n {{ .Release.Namespace }} -c {{ .Chart.Name }} -- cat {{ .Values.vault.secrets.appConfig.mountPath }}/{{ .Values.vault.secrets.appConfig.fileName }}
+
+5. For local verification through port-forward:
    kubectl port-forward -n {{ .Release.Namespace }} service/{{ include "devops-info-service.fullname" . }} 8080:{{ .Values.service.port }}
    curl http://127.0.0.1:8080/health
    curl http://127.0.0.1:8080/ready

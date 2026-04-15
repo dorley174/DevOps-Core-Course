@@ -19,7 +19,26 @@ spec:
     metadata:
       labels:
         {{- include "devops-info-service.labels" . | nindent 8 }}
+      {{- if or .Values.podAnnotations .Values.vault.enabled }}
+      annotations:
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.vault.enabled }}
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: {{ .Values.vault.role | quote }}
+        vault.hashicorp.com/auth-path: {{ .Values.vault.authPath | quote }}
+        vault.hashicorp.com/agent-inject-secret-app-config: {{ .Values.vault.secrets.appConfig.path | quote }}
+        vault.hashicorp.com/secret-volume-path-app-config: {{ .Values.vault.secrets.appConfig.mountPath | quote }}
+        vault.hashicorp.com/agent-inject-file-app-config: {{ .Values.vault.secrets.appConfig.fileName | quote }}
+        {{- if .Values.vault.service }}
+        vault.hashicorp.com/service: {{ .Values.vault.service | quote }}
+        {{- end }}
+        {{- end }}
+      {{- end }}
     spec:
+      serviceAccountName: {{ include "devops-info-service.serviceAccountName" . }}
+      automountServiceAccountToken: true
       securityContext:
         seccompProfile:
           type: RuntimeDefault
@@ -42,6 +61,18 @@ spec:
               value: {{ .Values.env.appMessage | quote }}
             - name: SERVICE_VERSION
               value: {{ .Values.env.serviceVersion | quote }}
+            {{- if .Values.secrets.enabled }}
+            - name: APP_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "devops-info-service.secretName" . }}
+                  key: username
+            - name: APP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "devops-info-service.secretName" . }}
+                  key: password
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           readinessProbe:
