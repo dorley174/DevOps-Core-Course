@@ -1,0 +1,16 @@
+{
+  "application": {
+    "name": "devops-info-service",
+    "environment": "dev",
+    "description": "Configuration mounted from a Helm-managed ConfigMap"
+  },
+  "features": {
+    "visitsEndpoint": true,
+    "persistentCounter": true,
+    "metrics": true
+  },
+  "settings": {
+    "logLevel": "INFO",
+    "configSource": "configmap-file"
+  }
+}

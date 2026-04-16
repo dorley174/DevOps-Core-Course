@@ -3,13 +3,15 @@
 [![python-ci](https://github.com/dorley174/DevOps-Core-Course/actions/workflows/python-ci.yml/badge.svg)](https://github.com/dorley174/DevOps-Core-Course/actions/workflows/python-ci.yml)
 
 ## Overview
-DevOps Info Service is a production-ready starter web service for the DevOps course.  
-It reports service metadata, runtime details, and basic system information.
+DevOps Info Service is a production-ready starter web service for the DevOps course.
+It reports service metadata, runtime details, basic system information, and a persisted visit counter.
 
-The service exposes two endpoints:
-- `GET /` — service + system + runtime + request information
+The service exposes these endpoints:
+- `GET /` — service + system + runtime + request information and increments the persisted visit counter
+- `GET /visits` — returns the current visit counter without incrementing it
 - `GET /health` — liveness health endpoint
 - `GET /ready` — readiness health endpoint for Kubernetes
+- `GET /metrics` — Prometheus metrics endpoint
 
 ## Prerequisites
 - Python **3.11+**
@@ -39,7 +41,7 @@ python app.py
 
 **Linux/Mac:**
 ```bash
-HOST=127.0.0.1 PORT=8080 DEBUG=True python app.py
+HOST=127.0.0.1 PORT=8080 DEBUG=True VISITS_FILE=./data/visits python app.py
 ```
 
 **Windows (PowerShell):**
@@ -47,6 +49,7 @@ HOST=127.0.0.1 PORT=8080 DEBUG=True python app.py
 $env:HOST="127.0.0.1"
 $env:PORT="8080"
 $env:DEBUG="True"
+$env:VISITS_FILE="./data/visits"
 python app.py
 ```
 
@@ -55,17 +58,27 @@ python app.py
 set HOST=127.0.0.1
 set PORT=8080
 set DEBUG=True
+set VISITS_FILE=./data/visits
 python app.py
 ```
 
 ## API Endpoints
 
 ### `GET /`
-Returns service metadata, system information, runtime details, request info, and a list of available endpoints.
+Returns service metadata, system information, runtime details, request info, runtime configuration, and the current visit count.
+Each request to `/` increments the persisted counter stored in `VISITS_FILE`.
 
 Example:
 ```bash
 curl http://127.0.0.1:5000/
+```
+
+### `GET /visits`
+Returns the current counter value without incrementing it.
+
+Example:
+```bash
+curl http://127.0.0.1:5000/visits
 ```
 
 ### `GET /health`
@@ -82,6 +95,37 @@ Returns readiness information for Kubernetes readiness probes.
 Example:
 ```bash
 curl -i http://127.0.0.1:5000/ready
+```
+
+## Local Persistence Testing with Docker Compose
+
+A `docker-compose.yml` file is provided to verify that the visits counter survives container restarts.
+
+### Start the service
+```bash
+mkdir -p data
+docker compose up --build -d
+```
+
+### Generate visits
+```bash
+curl http://127.0.0.1:5000/
+curl http://127.0.0.1:5000/
+curl http://127.0.0.1:5000/visits
+cat ./data/visits
+```
+
+### Restart and verify persistence
+```bash
+docker compose restart
+docker compose ps
+curl http://127.0.0.1:5000/visits
+cat ./data/visits
+```
+
+### Stop the stack
+```bash
+docker compose down
 ```
 
 ## Testing / Pretty Output
@@ -125,9 +169,14 @@ Add:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| HOST     | 0.0.0.0 | Bind address |
-| PORT     | 5000    | HTTP port |
-| DEBUG    | False   | Flask debug mode |
+| HOST | `0.0.0.0` | Bind address |
+| PORT | `5000` | HTTP port |
+| DEBUG | `False` | Flask debug mode |
+| VISITS_FILE | `/data/visits` | File used to persist the visit counter |
+| APP_ENV | `dev` | Runtime environment value |
+| LOG_LEVEL | `INFO` | Application log level metadata |
+| CONFIG_FILE_PATH | `/config/config.json` | Mounted ConfigMap file path |
+| FEATURE_VISITS_ENDPOINT | `true` | Feature flag exposed through environment variables |
 
 ---
 
@@ -144,20 +193,14 @@ docker build -t <image>:<tag> .
 ### Run
 
 ```bash
-docker run --rm -p 5000:5000 <image>:<tag>
-```
-
-(Optional: override env vars)
-
-```bash
-docker run --rm -p 5000:5000 -e PORT=5000 -e DEBUG=false <image>:<tag>
+docker run --rm -p 5000:5000 -e VISITS_FILE=/data/visits -v $(pwd)/data:/data <image>:<tag>
 ```
 
 ### Pull from Docker Hub
 
 ```bash
 docker pull <dockerhub-username>/<repo>:<tag>
-docker run --rm -p 5000:5000 <dockerhub-username>/<repo>:<tag>
+docker run --rm -p 5000:5000 -e VISITS_FILE=/data/visits -v $(pwd)/data:/data <dockerhub-username>/<repo>:<tag>
 ```
 
 ### Quick test
@@ -165,4 +208,5 @@ docker run --rm -p 5000:5000 <dockerhub-username>/<repo>:<tag>
 ```bash
 curl http://localhost:5000/health
 curl http://localhost:5000/
+curl http://localhost:5000/visits
 ```

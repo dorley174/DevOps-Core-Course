@@ -6,6 +6,7 @@ Endpoints:
 - GET /        : service + system + runtime + request info
 - GET /health  : health check (for probes/monitoring)
 - GET /metrics : Prometheus metrics endpoint
+- GET /visits  : current persisted visit counter value
 """
 
 from __future__ import annotations
@@ -16,8 +17,11 @@ import os
 import platform
 import socket
 import sys
+import tempfile
+import threading
 import time
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Dict
 
 from flask import Flask, Response, g, jsonify, request
@@ -39,8 +43,14 @@ SERVICE_DESCRIPTION = os.getenv("SERVICE_DESCRIPTION", "DevOps course info servi
 SERVICE_FRAMEWORK = "Flask"
 APP_VARIANT = os.getenv("APP_VARIANT", "primary")
 APP_MESSAGE = os.getenv("APP_MESSAGE", "running")
+APP_ENV = os.getenv("APP_ENV", "dev")
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+FEATURE_VISITS_ENDPOINT = os.getenv("FEATURE_VISITS_ENDPOINT", "true")
+CONFIG_FILE_PATH = os.getenv("CONFIG_FILE_PATH", "/config/config.json")
+VISITS_FILE = Path(os.getenv("VISITS_FILE", "/data/visits"))
 
 START_TIME_UTC = datetime.now(timezone.utc)
+VISITS_LOCK = threading.Lock()
 
 
 # -----------------------------------------------------------------------------
@@ -162,6 +172,7 @@ def get_client_ip() -> str:
         # "client, proxy1, proxy2"
         return forwarded_for.split(",")[0].strip()
     return request.remote_addr or "unknown"
+
 
 
 def normalize_endpoint() -> str:
@@ -289,13 +300,100 @@ def get_system_info() -> Dict[str, Any]:
 
 
 
+def ensure_visits_storage() -> int:
+    """Create the visits file if missing and return the initial counter value."""
+    VISITS_FILE.parent.mkdir(parents=True, exist_ok=True)
+    if not VISITS_FILE.exists():
+        write_visits_count(0)
+        return 0
+    return read_visits_count()
+
+
+
+def read_visits_count() -> int:
+    """Read the persisted visit counter from disk."""
+    try:
+        content = VISITS_FILE.read_text(encoding="utf-8").strip()
+    except FileNotFoundError:
+        return 0
+
+    if not content:
+        return 0
+
+    try:
+        return int(content)
+    except ValueError:
+        logger.warning(
+            "invalid_visits_file_content",
+            extra={
+                "event": "invalid_visits_file_content",
+                "service": SERVICE_NAME,
+                "version": SERVICE_VERSION,
+            },
+        )
+        return 0
+
+
+
+def write_visits_count(value: int) -> None:
+    """Persist the visit counter using an atomic replace operation."""
+    VISITS_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=str(VISITS_FILE.parent), delete=False) as handle:
+        handle.write(str(value))
+        handle.flush()
+        os.fsync(handle.fileno())
+        temp_path = Path(handle.name)
+
+    os.replace(temp_path, VISITS_FILE)
+
+
+
+def increment_visits_count() -> int:
+    """Read, increment, and persist the visit counter with in-process locking."""
+    with VISITS_LOCK:
+        current_value = read_visits_count()
+        next_value = current_value + 1
+        write_visits_count(next_value)
+        return next_value
+
+
+
+def get_runtime_config() -> Dict[str, Any]:
+    """Return file-based and environment-based configuration details."""
+    config_payload: Dict[str, Any] = {
+        "app_env": APP_ENV,
+        "log_level": LOG_LEVEL,
+        "feature_visits_endpoint": FEATURE_VISITS_ENDPOINT,
+        "config_file_path": CONFIG_FILE_PATH,
+        "config_file_loaded": False,
+    }
+
+    config_path = Path(CONFIG_FILE_PATH)
+    if not config_path.exists():
+        config_payload["config_file_error"] = "config file not found"
+        return config_payload
+
+    try:
+        config_payload["config_file"] = json.loads(config_path.read_text(encoding="utf-8"))
+        config_payload["config_file_loaded"] = True
+    except (OSError, json.JSONDecodeError) as exc:
+        config_payload["config_file_error"] = str(exc)
+
+    return config_payload
+
+
+
 def build_endpoints() -> list[Dict[str, str]]:
     return [
-        {"path": "/", "method": "GET", "description": "Service information"},
+        {"path": "/", "method": "GET", "description": "Service information and visit counter increment"},
+        {"path": "/visits", "method": "GET", "description": "Current persisted visit count"},
         {"path": "/health", "method": "GET", "description": "Liveness health check"},
         {"path": "/ready", "method": "GET", "description": "Readiness health check"},
         {"path": "/metrics", "method": "GET", "description": "Prometheus metrics"},
     ]
+
+
+INITIAL_VISITS = ensure_visits_storage()
 
 
 # -----------------------------------------------------------------------------
@@ -306,6 +404,7 @@ def build_endpoints() -> list[Dict[str, str]]:
 def index():
     """Main endpoint - service and system information."""
     uptime = get_uptime()
+    current_visits = increment_visits_count()
 
     payload: Dict[str, Any] = {
         "service": {
@@ -329,10 +428,30 @@ def index():
             "method": request.method,
             "path": request.path,
         },
+        "visits": {
+            "count": current_visits,
+            "file": str(VISITS_FILE),
+        },
+        "configuration": get_runtime_config(),
         "endpoints": build_endpoints(),
     }
 
     return jsonify(payload), 200
+
+
+@app.get("/visits")
+def visits():
+    """Return the current persisted visit counter without incrementing it."""
+    with VISITS_LOCK:
+        current_visits = read_visits_count()
+
+    return jsonify(
+        {
+            "visits": current_visits,
+            "file": str(VISITS_FILE),
+            "timestamp": iso_utc_now_z(),
+        }
+    ), 200
 
 
 @app.get("/health")
@@ -442,10 +561,12 @@ def main() -> None:
         },
     )
     logger.info(
-        "runtime_configuration host=%s port=%s debug=%s",
+        "runtime_configuration host=%s port=%s debug=%s visits_file=%s initial_visits=%s",
         HOST,
         PORT,
         DEBUG,
+        VISITS_FILE,
+        INITIAL_VISITS,
         extra={
             "event": "runtime_configuration",
             "service": SERVICE_NAME,
