@@ -109,4 +109,4 @@ hooks:
   postInstall:
     enabled: true
     weight: 5
-    sleepSeconds: 20
+    sleepSeconds: 60
