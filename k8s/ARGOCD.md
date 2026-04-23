@@ -437,7 +437,7 @@ Health Status: Healthy
 - [Applications overview](./evidence/proof1.png)
 - [Development application details](./evidence/argocd-ui-dev-details.png)
 - [Production application details](./evidence/argocd-ui-prod-details.png)
-- [Production application details](./evidence/argocd-ui-prod-details.png)
+- [Final work stage](./evidence/argocd-ui-synced.png)
 
 ---
 
