@@ -15,8 +15,12 @@ resources:
     memory: 128Mi
 
 env:
-  appMessage: "Lab 11 Helm development deployment"
-  serviceVersion: "lab11-dev"
+  appMessage: "Lab 13 GitOps development deployment"
+  serviceVersion: "lab13-dev"
+
+config:
+  environment: "dev"
+  logLevel: "DEBUG"
 
 readinessProbe:
   initialDelaySeconds: 3

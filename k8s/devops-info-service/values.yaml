@@ -10,7 +10,7 @@ revisionHistoryLimit: 10
 
 image:
   repository: dorley174/devops-info-service
-  tag: "latest"
+  tag: lab13
   pullPolicy: IfNotPresent
 
 containerPort: 5000
@@ -42,8 +42,24 @@ env:
   port: "5000"
   debug: "False"
   appVariant: app1
-  appMessage: "Lab 11 secret-managed deployment"
-  serviceVersion: "lab11-v1"
+  appMessage: "Lab 13 GitOps deployment"
+  serviceVersion: "lab13-v1"
+  visitsFile: "/data/visits"
+
+config:
+  mountPath: "/config"
+  fileName: "config.json"
+  environment: "dev"
+  logLevel: "INFO"
+  featureFlags:
+    visitsEndpoint: true
+    persistentCounter: true
+
+persistence:
+  enabled: true
+  mountPath: "/data"
+  size: 100Mi
+  storageClass: ""
 
 secrets:
   enabled: true
@@ -83,8 +99,8 @@ livenessProbe:
 
 hooks:
   image:
-    repository: busybox
-    tag: "1.36"
+    repository: dorley174/devops-info-service
+    tag: lab13
     pullPolicy: IfNotPresent
   preInstall:
     enabled: true
