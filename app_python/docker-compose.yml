@@ -1,0 +1,18 @@
+services:
+  devops-info-service:
+    build:
+      context: .
+    container_name: devops-info-service
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: "5000"
+      DEBUG: "False"
+      VISITS_FILE: "/data/visits"
+      APP_ENV: "local"
+      LOG_LEVEL: "INFO"
+      CONFIG_FILE_PATH: "/config/config.json"
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
+    user: "0:0"

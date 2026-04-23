@@ -1,8 +1,8 @@
 apiVersion: v2
 name: devops-info-service
-description: Helm chart for the DevOps info service with Kubernetes Secrets and Vault integration
+description: Helm chart for the DevOps info service with Kubernetes Secrets, ConfigMaps, and persistent storage
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "latest"
 keywords:
   - python
@@ -10,6 +10,8 @@ keywords:
   - kubernetes
   - helm
   - secrets
+  - configmap
+  - pvc
   - vault
 dependencies:
   - name: common-lib

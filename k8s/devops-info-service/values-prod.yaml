@@ -15,8 +15,12 @@ resources:
     memory: 512Mi
 
 env:
-  appMessage: "Lab 11 Helm production deployment"
-  serviceVersion: "lab11-prod"
+  appMessage: "Lab 12 Helm production deployment"
+  serviceVersion: "lab12-prod"
+
+config:
+  environment: "prod"
+  logLevel: "INFO"
 
 readinessProbe:
   initialDelaySeconds: 10
