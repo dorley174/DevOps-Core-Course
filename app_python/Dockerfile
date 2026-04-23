@@ -10,7 +10,9 @@ WORKDIR /app
 
 # Create a dedicated non-root user with numeric UID/GID.
 RUN addgroup --system --gid 10001 app \
-    && adduser --system --uid 10001 --ingroup app --no-create-home app
+    && adduser --system --uid 10001 --ingroup app --no-create-home app \
+    && mkdir -p /data /config \
+    && chown -R 10001:10001 /app /data /config
 
 # Install dependencies first to leverage Docker layer caching.
 COPY requirements.txt ./
