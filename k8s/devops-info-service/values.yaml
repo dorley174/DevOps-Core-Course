@@ -19,11 +19,41 @@ strategy:
   maxSurge: 1
   maxUnavailable: 0
 
+rollout:
+  enabled: true
+  strategy: canary
+  canary:
+    maxSurge: 1
+    maxUnavailable: 0
+    steps:
+      - setWeight: 20
+      - pause: {}
+      - setWeight: 40
+      - pause:
+          duration: 30s
+      - setWeight: 60
+      - pause:
+          duration: 30s
+      - setWeight: 80
+      - pause:
+          duration: 30s
+      - setWeight: 100
+  blueGreen:
+    autoPromotionEnabled: false
+    scaleDownDelaySeconds: 30
+    autoPromotionSeconds: null
+
 service:
   type: NodePort
   port: 80
   targetPort: 5000
   nodePort: 30083
+
+previewService:
+  type: ClusterIP
+  port: 80
+  targetPort: 5000
+  nodePort: null
 
 serviceAccount:
   create: true
@@ -42,8 +72,8 @@ env:
   port: "5000"
   debug: "False"
   appVariant: app1
-  appMessage: "Lab 13 GitOps deployment"
-  serviceVersion: "lab13-v1"
+  appMessage: "Lab 14 progressive delivery deployment"
+  serviceVersion: "lab14-canary-v1"
   visitsFile: "/data/visits"
 
 config:
@@ -99,8 +129,8 @@ livenessProbe:
 
 hooks:
   image:
-    repository: dorley174/devops-info-service
-    tag: lab13
+    repository: busybox
+    tag: "1.36.1"
     pullPolicy: IfNotPresent
   preInstall:
     enabled: true

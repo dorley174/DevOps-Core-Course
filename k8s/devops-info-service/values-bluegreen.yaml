@@ -1,0 +1,22 @@
+# Lab 14 blue-green strategy values.
+rollout:
+  enabled: true
+  strategy: blueGreen
+  blueGreen:
+    autoPromotionEnabled: false
+    scaleDownDelaySeconds: 30
+    autoPromotionSeconds: null
+
+previewService:
+  type: ClusterIP
+  port: 80
+  targetPort: 5000
+  nodePort: null
+
+env:
+  appMessage: "Lab 14 blue-green active deployment"
+  serviceVersion: "lab14-bg-v1"
+
+hooks:
+  postInstall:
+    enabled: false
