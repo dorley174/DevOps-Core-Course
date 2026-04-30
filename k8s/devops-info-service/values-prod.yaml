@@ -15,8 +15,8 @@ resources:
     memory: 512Mi
 
 env:
-  appMessage: "Lab 12 Helm production deployment"
-  serviceVersion: "lab12-prod"
+  appMessage: "Lab 13 GitOps production deployment"
+  serviceVersion: "lab13-prod"
 
 config:
   environment: "prod"

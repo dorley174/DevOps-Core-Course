@@ -4,7 +4,7 @@ service:
   type: NodePort
   port: 80
   targetPort: 5000
-  nodePort: 30080
+  nodePort: 30084
 
 resources:
   requests:
@@ -15,8 +15,8 @@ resources:
     memory: 128Mi
 
 env:
-  appMessage: "Lab 12 Helm development deployment"
-  serviceVersion: "lab12-dev"
+  appMessage: "Lab 13 GitOps development deployment"
+  serviceVersion: "lab13-dev"
 
 config:
   environment: "dev"

@@ -10,7 +10,7 @@ revisionHistoryLimit: 10
 
 image:
   repository: dorley174/devops-info-service
-  tag: "latest"
+  tag: lab13
   pullPolicy: IfNotPresent
 
 containerPort: 5000
@@ -23,7 +23,7 @@ service:
   type: NodePort
   port: 80
   targetPort: 5000
-  nodePort: 30080
+  nodePort: 30083
 
 serviceAccount:
   create: true
@@ -42,8 +42,8 @@ env:
   port: "5000"
   debug: "False"
   appVariant: app1
-  appMessage: "Lab 12 configmap and persistence deployment"
-  serviceVersion: "lab12-v1"
+  appMessage: "Lab 13 GitOps deployment"
+  serviceVersion: "lab13-v1"
   visitsFile: "/data/visits"
 
 config:
@@ -99,8 +99,8 @@ livenessProbe:
 
 hooks:
   image:
-    repository: busybox
-    tag: "1.36"
+    repository: dorley174/devops-info-service
+    tag: lab13
     pullPolicy: IfNotPresent
   preInstall:
     enabled: true
@@ -109,4 +109,4 @@ hooks:
   postInstall:
     enabled: true
     weight: 5
-    sleepSeconds: 5
+    sleepSeconds: 60
