@@ -1,0 +1,23 @@
+{{- if and .Values.rollout.enabled (eq .Values.rollout.strategy "blueGreen") }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "devops-info-service.fullname" . }}-preview
+  labels:
+    {{- include "devops-info-service.labels" . | nindent 4 }}
+    app.kubernetes.io/role: preview
+spec:
+  type: {{ .Values.previewService.type }}
+{{- if not (and .Values.rollout.enabled (eq .Values.rollout.strategy "blueGreen")) }}
+  selector:
+    {{- include "devops-info-service.selectorLabels" . | nindent 4 }}
+{{- end }}
+  ports:
+    - name: http
+      protocol: TCP
+      port: {{ .Values.previewService.port }}
+      targetPort: {{ .Values.previewService.targetPort }}
+{{- if and (eq .Values.previewService.type "NodePort") .Values.previewService.nodePort }}
+      nodePort: {{ .Values.previewService.nodePort }}
+{{- end }}
+{{- end }}

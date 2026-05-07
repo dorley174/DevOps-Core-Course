@@ -1,18 +1,27 @@
-1. Get the release status:
+1. Check the Helm release:
    helm status {{ .Release.Name }} -n {{ .Release.Namespace }}
 
-2. Inspect the generated Secret and ServiceAccount:
-   kubectl get secret {{ include "devops-info-service.secretName" . }} -n {{ .Release.Namespace }} -o yaml
-   kubectl get serviceaccount {{ include "devops-info-service.serviceAccountName" . }} -n {{ .Release.Namespace }}
+2. Inspect the Argo Rollout:
+   kubectl get rollout {{ include "devops-info-service.fullname" . }} -n {{ .Release.Namespace }}
+   kubectl argo rollouts get rollout {{ include "devops-info-service.fullname" . }} -n {{ .Release.Namespace }}
 
-3. Verify Secret-backed environment variables inside the application pod:
-   kubectl exec deploy/{{ include "devops-info-service.fullname" . }} -n {{ .Release.Namespace }} -c {{ .Chart.Name }} -- printenv | grep '^APP_'
+3. Verify Secret-backed environment variables from one matching pod:
+   POD=$(kubectl get pods -n {{ .Release.Namespace }} -l app.kubernetes.io/instance={{ .Release.Name }} -o jsonpath='{.items[0].metadata.name}')
+   kubectl exec "$POD" -n {{ .Release.Namespace }} -c {{ .Chart.Name }} -- printenv | grep '^APP_'
 
 4. If Vault injection is enabled, verify the rendered secret file:
-   kubectl exec deploy/{{ include "devops-info-service.fullname" . }} -n {{ .Release.Namespace }} -c {{ .Chart.Name }} -- ls -la {{ .Values.vault.secrets.appConfig.mountPath }}
-   kubectl exec deploy/{{ include "devops-info-service.fullname" . }} -n {{ .Release.Namespace }} -c {{ .Chart.Name }} -- cat {{ .Values.vault.secrets.appConfig.mountPath }}/{{ .Values.vault.secrets.appConfig.fileName }}
+   POD=$(kubectl get pods -n {{ .Release.Namespace }} -l app.kubernetes.io/instance={{ .Release.Name }} -o jsonpath='{.items[0].metadata.name}')
+   kubectl exec "$POD" -n {{ .Release.Namespace }} -c {{ .Chart.Name }} -- ls -la {{ .Values.vault.secrets.appConfig.mountPath }}
+   kubectl exec "$POD" -n {{ .Release.Namespace }} -c {{ .Chart.Name }} -- cat {{ .Values.vault.secrets.appConfig.mountPath }}/{{ .Values.vault.secrets.appConfig.fileName }}
 
 5. For local verification through port-forward:
    kubectl port-forward -n {{ .Release.Namespace }} service/{{ include "devops-info-service.fullname" . }} 8080:{{ .Values.service.port }}
    curl http://127.0.0.1:8080/health
    curl http://127.0.0.1:8080/ready
+
+{{- if and .Values.rollout.enabled (eq .Values.rollout.strategy "blueGreen") }}
+6. For blue-green preview testing:
+   kubectl port-forward -n {{ .Release.Namespace }} service/{{ include "devops-info-service.fullname" . }}-preview 8081:{{ .Values.previewService.port }}
+   curl http://127.0.0.1:8081/health
+   kubectl argo rollouts promote {{ include "devops-info-service.fullname" . }} -n {{ .Release.Namespace }}
+{{- end }}
