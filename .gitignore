@@ -27,3 +27,8 @@ labs/lab18/app_python/freeze*.txt
 labs/lab18/app_python/requirements-unpinned.txt
 labs/lab18/app_python/*.tar
 labs/lab18/app_python/*.tar.gz
+
+# Lab 18 generated local files
+labs/lab18/app_python/venv*/
+labs/lab18/app_python/result
+result
