@@ -1,0 +1,3 @@
+lab2-app                        v2             3d1599933b32   4 weeks ago     189MB
+lab2-app                        v1             8fc4113f4485   4 weeks ago     189MB
+devops-info-service-nix         1.0.0          d5f5ad80fafd   56 years ago    396MB

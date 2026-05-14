@@ -1,0 +1,19 @@
+IMAGE          CREATED         CREATED BY                                      SIZE      COMMENT
+8fc4113f4485   4 weeks ago     CMD ["python" "app.py"]                         0B        buildkit.dockerfile.v0
+<missing>      4 weeks ago     EXPOSE &{[{{28 0} {28 0}}] 0xc001a908c0}        0B        buildkit.dockerfile.v0
+<missing>      4 weeks ago     USER 10001:10001                                0B        buildkit.dockerfile.v0
+<missing>      4 weeks ago     COPY app.py ./ # buildkit                       28.7kB    buildkit.dockerfile.v0
+<missing>      4 weeks ago     RUN /bin/sh -c pip install --no-cache-dir -r…   6.16MB    buildkit.dockerfile.v0
+<missing>      4 weeks ago     COPY requirements.txt ./ # buildkit             12.3kB    buildkit.dockerfile.v0
+<missing>      4 weeks ago     RUN /bin/sh -c addgroup --system --gid 10001…   57.3kB    buildkit.dockerfile.v0
+<missing>      3 months ago    WORKDIR /app                                    8.19kB    buildkit.dockerfile.v0
+<missing>      3 months ago    ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFER…   0B        buildkit.dockerfile.v0
+<missing>      16 months ago   CMD ["python3"]                                 0B        buildkit.dockerfile.v0
+<missing>      16 months ago   RUN /bin/sh -c set -eux;  for src in idle3 p…   16.4kB    buildkit.dockerfile.v0
+<missing>      16 months ago   RUN /bin/sh -c set -eux;   savedAptMark="$(a…   41.3MB    buildkit.dockerfile.v0
+<missing>      16 months ago   ENV PYTHON_SHA256=9cf9427bee9e2242e3877dd0f6…   0B        buildkit.dockerfile.v0
+<missing>      16 months ago   ENV PYTHON_VERSION=3.13.1                       0B        buildkit.dockerfile.v0
+<missing>      16 months ago   ENV GPG_KEY=7169605F62C751356D054A26A821E680…   0B        buildkit.dockerfile.v0
+<missing>      16 months ago   RUN /bin/sh -c set -eux;  apt-get update;  a…   10.4MB    buildkit.dockerfile.v0
+<missing>      16 months ago   ENV PATH=/usr/local/bin:/usr/local/sbin:/usr…   0B        buildkit.dockerfile.v0
+<missing>      16 months ago   # debian.sh --arch 'amd64' out/ 'bookworm' '…   85.2MB    debuerreotype 0.15
