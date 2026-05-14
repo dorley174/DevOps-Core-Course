@@ -19,8 +19,11 @@ strategy:
   maxSurge: 1
   maxUnavailable: 0
 
-rollout:
+statefulset:
   enabled: true
+
+rollout:
+  enabled: false
   strategy: canary
   canary:
     maxSurge: 1
@@ -72,8 +75,8 @@ env:
   port: "5000"
   debug: "False"
   appVariant: app1
-  appMessage: "Lab 14 progressive delivery deployment"
-  serviceVersion: "lab14-canary-v1"
+  appMessage: "Lab 15 StatefulSet with per-pod persistent storage"
+  serviceVersion: "lab15-statefulset-v1"
   visitsFile: "/data/visits"
 
 config:
