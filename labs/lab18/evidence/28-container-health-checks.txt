@@ -1,0 +1,10 @@
+--- docker ps ---
+CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS         PORTS                                         NAMES
+9a7ceb173dd2   devops-info-service-nix:1.0.0   "/nix/store/06c4hlva…"   9 seconds ago    Up 8 seconds   0.0.0.0:5001->5000/tcp, [::]:5001->5000/tcp   nix-container
+892f8c447961   lab2-app:v1                     "python app.py"          10 seconds ago   Up 9 seconds   0.0.0.0:5000->5000/tcp, [::]:5000->5000/tcp   lab2-container
+--- lab2 container health ---
+{"status":"healthy","timestamp":"2026-05-14T20:17:35.129Z","uptime_seconds":8,"variant":"primary"}
+
+--- nix container health ---
+{"status":"healthy","timestamp":"2026-05-14T20:17:35.144Z","uptime_seconds":8,"variant":"primary"}
+
