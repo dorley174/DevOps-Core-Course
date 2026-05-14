@@ -1,0 +1,2 @@
+NAME                             STATUS   ROLES           AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                         KERNEL-VERSION                       CONTAINER-RUNTIME
+lab16-monitoring-control-plane   Ready    control-plane   69m   v1.34.3   172.19.0.2    <none>        Debian GNU/Linux 12 (bookworm)   5.15.153.1-microsoft-standard-WSL2   containerd://2.2.0

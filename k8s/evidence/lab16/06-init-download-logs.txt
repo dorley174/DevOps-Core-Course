@@ -1,0 +1,6 @@
+Connecting to example.com (172.66.147.243:443)
+wget: note: TLS certificate validation not implemented
+saving to '/work-dir/index.html'
+index.html           100% |********************************|   528  0:00:00 ETA
+'/work-dir/index.html' saved
+Download complete

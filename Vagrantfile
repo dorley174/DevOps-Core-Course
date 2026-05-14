@@ -1,6 +1,7 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/jammy64"
-  config.vm.hostname = "lab15-statefulset"
+  config.vm.boot_timeout = 600
+  config.vm.hostname = "lab16-monitoring"
 
   # Disable project folder sharing inside the VM.
   # This avoids common Windows path issues (spaces, Cyrillic characters)
@@ -21,7 +22,7 @@ Vagrant.configure("2") do |config|
   config.ssh.insert_key = true
 
   config.vm.provider "virtualbox" do |vb|
-    vb.name = "lab15-statefulset"
+    vb.name = "lab16-monitoring"
     vb.memory = 6144
     vb.cpus = 2
   end

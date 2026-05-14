@@ -1,0 +1,21 @@
+NAMESPACE            NAME                                                     READY   STATUS    RESTARTS       AGE
+default              devops-info-service-0                                    1/1     Running   0              46m
+default              devops-info-service-1                                    1/1     Running   0              47m
+default              devops-info-service-2                                    1/1     Running   0              46m
+default              init-download-demo                                       1/1     Running   0              10m
+default              wait-for-service-demo                                    1/1     Running   0              10m
+kube-system          coredns-66bc5c9577-42fvq                                 1/1     Running   0              69m
+kube-system          coredns-66bc5c9577-8bgx4                                 1/1     Running   0              69m
+kube-system          etcd-lab16-monitoring-control-plane                      1/1     Running   0              69m
+kube-system          kindnet-2nlf6                                            1/1     Running   0              69m
+kube-system          kube-apiserver-lab16-monitoring-control-plane            1/1     Running   0              69m
+kube-system          kube-controller-manager-lab16-monitoring-control-plane   1/1     Running   0              69m
+kube-system          kube-proxy-cxlwb                                         1/1     Running   0              69m
+kube-system          kube-scheduler-lab16-monitoring-control-plane            1/1     Running   0              69m
+local-path-storage   local-path-provisioner-5c4cdb564f-87fpm                  1/1     Running   0              69m
+monitoring           alertmanager-monitoring-kube-prometheus-alertmanager-0   2/2     Running   0              14m
+monitoring           monitoring-grafana-84679f6c87-5c8c9                      3/3     Running   1 (9m6s ago)   14m
+monitoring           monitoring-kube-prometheus-operator-86c4b6bddf-blhkv     1/1     Running   0              14m
+monitoring           monitoring-kube-state-metrics-6d6b9cd8bc-8tvml           1/1     Running   0              14m
+monitoring           monitoring-prometheus-node-exporter-9n4c5                1/1     Running   0              14m
+monitoring           prometheus-monitoring-kube-prometheus-prometheus-0       2/2     Running   0              14m

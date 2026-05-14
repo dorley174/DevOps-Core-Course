@@ -1,0 +1,5 @@
+NAME                                                                     VERSION              DESIRED   READY   RECONCILED   AVAILABLE   AGE
+prometheus.monitoring.coreos.com/monitoring-kube-prometheus-prometheus   v3.11.3-distroless   1         1       True         True        14m
+
+NAME                                                                         VERSION   REPLICAS   READY   RECONCILED   AVAILABLE   AGE
+alertmanager.monitoring.coreos.com/monitoring-kube-prometheus-alertmanager   v0.32.1   1          1       True         True        14m

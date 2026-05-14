@@ -1,0 +1,19 @@
+NAME                                   READY   AGE
+statefulset.apps/devops-info-service   3/3     63m
+
+NAME                        READY   STATUS    RESTARTS   AGE
+pod/devops-info-service-0   1/1     Running   0          43m
+pod/devops-info-service-1   1/1     Running   0          44m
+pod/devops-info-service-2   1/1     Running   0          43m
+pod/init-download-demo      1/1     Running   0          7m33s
+pod/wait-for-service-demo   1/1     Running   0          7m33s
+
+NAME                                   TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+service/devops-info-service            NodePort    10.96.233.40   <none>        80:30083/TCP   63m
+service/devops-info-service-headless   ClusterIP   None           <none>        80/TCP         63m
+service/kubernetes                     ClusterIP   10.96.0.1      <none>        443/TCP        66m
+
+NAME                                                      STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/data-volume-devops-info-service-0   Bound    pvc-3263896f-7aa7-493e-9ef0-0fd3fa290f40   100Mi      RWO            standard       <unset>                 63m
+persistentvolumeclaim/data-volume-devops-info-service-1   Bound    pvc-4ca71f12-f30d-4472-b5ba-47c28a0073eb   100Mi      RWO            standard       <unset>                 44m
+persistentvolumeclaim/data-volume-devops-info-service-2   Bound    pvc-1b412594-628c-4a5c-89a8-15628f1af0fe   100Mi      RWO            standard       <unset>                 43m
