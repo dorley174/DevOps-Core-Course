@@ -1,0 +1,4 @@
+# Copy to .dev.vars for local Wrangler development only.
+# Do not commit real secret values.
+API_TOKEN=local-dev-token-change-me
+ADMIN_EMAIL=student@example.com
