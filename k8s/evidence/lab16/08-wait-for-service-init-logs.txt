@@ -1,0 +1,8 @@
+Server:		10.96.0.10
+Address:	10.96.0.10:53
+
+
+Name:	monitoring-grafana.monitoring.svc.cluster.local
+Address: 10.96.165.0
+
+Dependency is ready
